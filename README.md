@@ -3,7 +3,7 @@
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.java.net/)
 [![JavaFX](https://img.shields.io/badge/JavaFX-21-blue.svg)](https://openjfx.io/)
 [![Maven](https://img.shields.io/badge/Maven-3.13.0-red.svg)](https://maven.apache.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/Licenza-Commons_Clause%20%2B%20MIT-red)](LICENSE.md)
 
 ## 📖 Descrição
 
@@ -87,8 +87,8 @@ memoryMath/
 
 1. **Clone o repositório**
    ```bash
-   git clone https://github.com/seu-usuario/memoryMath.git
-   cd memoryMath
+   git clone https://github.com/renanamancio/memory-math
+   cd memory-Math
    ```
 
 2. **Compile o projeto**
@@ -201,12 +201,12 @@ mvn javafx:jlink
 - Use nomes descritivos para variáveis e métodos
 
 ## 📝 Licença
-
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+Este projeto permite colaboração aberta, mas proíbe redistribuição, sublicenciamento e uso comercial.  
+Leia o arquivo [LICENSE](LICENSE.md) para detalhes.
 
 ## 👥 Autores
 
-- **Memory Math Team** - *Desenvolvimento inicial* - [GitHub](https://github.com/seu-usuario)
+- **Memory Math Team** - *Desenvolvimento inicial* - [GitHub](https://github.com/renanamancio)
 
 ## 🙏 Agradecimentos
 
@@ -218,9 +218,9 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 Se você encontrar algum problema ou tiver sugestões:
 
-1. Verifique se há uma [issue](https://github.com/seu-usuario/memoryMath/issues) relacionada
+1. Verifique se há uma [issue](https://github.com/renanamancio/memory-math/issues) relacionada
 2. Crie uma nova issue com detalhes do problema
-3. Para dúvidas gerais, abra uma [discussion](https://github.com/seu-usuario/memoryMath/discussions)
+3. Para dúvidas gerais, abra uma [discussion](https://github.com/renanamancio/memory-math/discussions)
 
 ---
 
