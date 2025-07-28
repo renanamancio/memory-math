@@ -5,6 +5,10 @@
 [![Maven](https://img.shields.io/badge/Maven-3.13.0-red.svg)](https://maven.apache.org/)
 [![License](https://img.shields.io/badge/Licenza-Commons_Clause%20%2B%20MIT-red)](LICENSE.md)
 
+<p align="center">
+  <img width="350" height="350" alt="logoJogo" src="https://github.com/user-attachments/assets/d813046b-c188-4113-b2ea-07871c8c2761" />
+</p>
+
 ## 📖 Descrição
 
 **Memory Math** é um jogo educativo de memória que combina o clássico jogo da memória com operações matemáticas. Os jogadores devem encontrar pares de cartas onde uma carta contém uma operação matemática e a outra contém o resultado correspondente.
@@ -206,7 +210,7 @@ Leia o arquivo [LICENSE](LICENSE.md) para detalhes.
 
 ## 👥 Autores
 
-- **Memory Math Team** - *Desenvolvimento inicial* - [GitHub](https://github.com/renanamancio)
+- **Renan Henrique Batista Amancio** - *Desenvolvimento inicial* - [GitHub](https://github.com/renanamancio)
 
 ## 🙏 Agradecimentos
 
