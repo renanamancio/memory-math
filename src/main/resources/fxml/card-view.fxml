@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane fx:id="cardFacePane" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jogodamemoria.memorymath.controllers.CardViewController">
+    <children>
+        <ImageView fx:id="cardFaceBackgroundImage" pickOnBounds="true" preserveRatio="true" />
+
+        <Label fx:id="cardValueLabel" styleClass="card-text-label" text="5 x 5" />
+
+        <ImageView fx:id="cardBackImage" pickOnBounds="true" preserveRatio="true" />
+    </children>
+</StackPane>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" spacing="40.0" styleClass="background" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jogodamemoria.memorymath.controllers.VitoriaController">
+
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <children>
+        <VBox alignment="CENTER" spacing="20.0">
+            <children>
+                <Label styleClass="labelVitoria" text="🎉 Fim de Jogo! 🎉" />
+                <Label fx:id="vencedorLabel" styleClass="labelVitoria" text="Vitória de Jogador X!" />
+                <Label fx:id="placarFinalLabel" styleClass="labelVitoria" text="Placar Final: 8 a 5" />
+            </children>
+        </VBox>
+        <HBox alignment="CENTER" spacing="10.0">
+            <children>
+                <Button onAction="#aoClicarJogarNovamente" styleClass="button" text="Jogar Novamente" />
+                <Button onAction="#aoClicarMenuPrincipal" styleClass="button" text="Menu Principal" />
+                <Button onAction="#aoClicarEncerrar" styleClass="button" text="Sair" />
+            </children>
+        </HBox>
+    </children>
+</VBox>

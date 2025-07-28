@@ -1,0 +1,243 @@
+.background{
+    -fx-background-image: url("../images/imagemFundoQuadro.jpg");
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+.buttonOp{
+    -fx-background-color: rgb(42, 36, 64);
+}
+.paneOverLay{
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-background-radius: 20;
+
+}
+
+.labelVitoria{
+    -fx-font-family: "Rockwell";
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #000000;
+}
+.labelPadrao{
+    -fx-font-family: "Roboto Thin";
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #000000;
+}
+.labelPadrao2{
+    -fx-font-family: "Roboto Thin";
+    -fx-text-fill: #000000;
+    -fx-font-size: 15px;
+}
+.efeitoSombra{
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.72), 10, 0, 0, 2);
+}
+.hboxAI{
+    -fx-font-family: "Roboto Thin";
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+.card-text-label{
+    -fx-text-overrun: word-ellipsis;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #000000;
+}
+
+.button{
+    -fx-background-color: #4A90E2;
+    -fx-background-radius: 10;
+    -fx-font-family: "Roboto Thin";
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+.button:hover{
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.button2{
+    -fx-background-color: #4A90E2;
+    -fx-background-radius: 18;
+    -fx-font-family: "Roboto Thin";
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+.button2:hover{
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.card-pane {
+    -fx-background-color: white;
+    -fx-border-color: #333;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-cursor: hand;
+    -fx-min-width: 120px;
+    -fx-min-height: 120px;
+    -fx-pref-width: 90px;
+    -fx-pref-height: 90px;
+    -fx-max-width: 120px;
+    -fx-max-height: 120px;
+}
+
+.card-pane:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 0, 0);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.card-pane.matched {
+    -fx-background-color: lightgreen;
+    -fx-opacity: 0.7;
+    -fx-cursor: default;
+}
+
+.grid-pane {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 10;
+    -fx-padding: 10;
+    -fx-hgap: 8;
+    -fx-vgap: 8;
+    -fx-alignment: center;
+}
+
+.card {
+    -fx-pref-width: 90px;
+    -fx-pref-height: 90px;
+    -fx-min-width: 90px;
+    -fx-min-height: 90px;
+    -fx-max-width: 90px;
+    -fx-max-height: 90px;
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+    -fx-border-color: black;
+    -fx-border-width: 3px;
+    -fx-border-radius: 10px;
+    -fx-padding: 0;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, #222, 6, 0.2, 2, 2);
+    margin: 8px;
+
+    -fx-overflow: visible;
+}
+
+.card.matched {
+    -fx-border-color: #2ecc40;
+    -fx-border-width: 4px;
+}
+
+.card.erro-match {
+    -fx-border-color: #e74c3c;
+    -fx-border-width: 4px;
+}
+
+.card > .image-view {
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-effect: none;
+}
+
+.grid-pane {
+    -fx-hgap: 16px;
+    -fx-vgap: 16px;
+    -fx-alignment: center;
+}
+
+.board-title-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #000000;
+    -fx-effect: dropshadow(gaussian, rgba(159, 148, 148, 0.8), 2, 0, 0, 0);
+}
+
+.player-score-container {
+    -fx-background-color: rgba(6, 225, 185, 0.7);
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-spacing: 4;
+    -fx-min-width: 100px;
+    -fx-alignment: center;
+}
+
+.player-name-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: black;
+    -fx-alignment: center;
+}
+
+.score-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FFD700;
+    -fx-alignment: center;
+}
+
+#turnIndicatorLabel {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 2, 0, 0, 0);
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-radius: 5;
+    -fx-padding: 5 10;
+}
+
+.toggle-button:selected, .toggle-button:selected:hover, .toggle-button:selected:focused {
+    -fx-background-color: #3b5998;
+    -fx-text-fill: #fff;
+    -fx-border-color: #3b5998;
+}
+
+@media (max-width: 800px) {
+    .card-pane {
+        -fx-min-width: 60px;
+        -fx-min-height: 60px;
+        -fx-pref-width: 70px;
+        -fx-pref-height: 70px;
+    }
+    
+    .board-title-label {
+        -fx-font-size: 14px;
+    }
+    
+    .player-score-container {
+        -fx-min-width: 100px;
+        -fx-padding: 10;
+    }
+    
+    .score-label {
+        -fx-font-size: 20px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .card-pane {
+        -fx-min-width: 100px;
+        -fx-min-height: 100px;
+        -fx-pref-width: 110px;
+        -fx-pref-height: 110px;
+    }
+    
+    .board-title-label {
+        -fx-font-size: 22px;
+    }
+    
+    .player-score-container {
+        -fx-min-width: 150px;
+        -fx-padding: 20;
+    }
+    
+    .score-label {
+        -fx-font-size: 28px;
+    }
+}

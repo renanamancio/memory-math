@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="397.0" prefWidth="547.0" styleClass="background" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jogodamemoria.memorymath.controllers.MenuSelecaoController">
+   <center>
+      <VBox alignment="CENTER" spacing="50.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="260.0" styleClass="efeitoSombra" fitWidth="340.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/logoJogo.png" />
+               </image>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </ImageView>
+            <Button maxWidth="300" onAction="#aoClicarJogar" styleClass="button" text="Nova Partida" />
+         </children>
+      </VBox>
+   </center>
+   <bottom>
+      <Label style="-fx-padding: 10;" text="Versão 1.0">
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </Label>
+   </bottom>
+</BorderPane>

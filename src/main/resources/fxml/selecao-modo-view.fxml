@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefHeight="307.0" prefWidth="650.0" styleClass="background" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jogodamemoria.memorymath.controllers.MenuSelecaoController">
+    <center>
+        <VBox alignment="CENTER" spacing="40.0">
+            <children>
+                <Label styleClass="title-label" text="Escolha o Modo de Jogo" />
+                <HBox alignment="CENTER" spacing="30.0">
+                    <children>
+                        <Button onAction="#aoClicarPvP" prefHeight="100.0" prefWidth="300.0" styleClass="button" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/logo-pvp.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                        <Button onAction="#aoClicarPvE" prefHeight="105.0" prefWidth="305.0" styleClass="button" HBox.hgrow="ALWAYS">
+                     <graphic>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/logo-pvm.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                    </children>
+               <VBox.margin>
+                  <Insets left="20.0" right="20.0" />
+               </VBox.margin>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+    <bottom>
+        <Button onAction="#voltarMenu" text="Voltar ao Menu" styleClass="button" BorderPane.alignment="TOP_CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" />
+         </BorderPane.margin></Button>
+    </bottom>
+</BorderPane>
