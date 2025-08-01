@@ -15,11 +15,11 @@ Um jogo educativo de memória que combina matemática com diversão! Encontre pa
 
 ## 🎮 Características
 
-- **Sistema de Pontuação**: +10 pontos por acerto, -3 pontos por erro
+- **Sistema de Pontuação**: +5 pontos por acerto, -1 ponto por erro
 - **Modos de Jogo**: PvP (Jogador vs Jogador) e PvE (Jogador vs IA)
 - **Dificuldades da IA**: Fácil, Médio e Difícil
 - **Operações Matemáticas**: Soma, Subtração, Multiplicação e Divisão
-
+- **Estrutura do Jogo**: 24 cartas (12 pares únicos)
 - **Interface Responsiva**: Otimizada para desktop
 - **Sons e Música**: Efeitos sonoros e música de fundo
 
@@ -29,9 +29,10 @@ Um jogo educativo de memória que combina matemática com diversão! Encontre pa
 2. **Primeira Carta**: Clique em uma carta do grid de operações
 3. **Segunda Carta**: Clique em uma carta do grid de resultados
 4. **Pontuação**: 
-   - Acertar um par: +10 pontos
-   - Errar um par: -3 pontos
-5. **Vitória**: Quem tiver mais pontos no final vence!
+   - Acertar um par: +5 pontos
+   - Errar um par: -1 ponto
+5. **Fim do Jogo**: O jogo termina quando todos os 12 pares forem encontrados
+6. **Vitória**: Quem tiver mais pontos no final vence!
 
 ## 🛠️ Requisitos
 

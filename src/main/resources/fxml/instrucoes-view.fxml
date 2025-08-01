@@ -33,18 +33,28 @@
                                 <VBox spacing="5.0">
                                     <Label styleClass="labelPadrao2" text="1. Clique em uma carta do grid de operações (primeira carta)" />
                                     <Label styleClass="labelPadrao2" text="2. Clique em uma carta do grid de resultados (segunda carta)" />
-                                    <Label styleClass="labelPadrao2" text="3. Se formar um par correto, você ganha 10 pontos e continua jogando" />
-                                    <Label styleClass="labelPadrao2" text="4. Se errar, perde 3 pontos e passa a vez" />
-                                    <Label styleClass="labelPadrao2" text="5. O jogo termina quando todas as cartas forem reveladas" />
+                                    <Label styleClass="labelPadrao2" text="3. Se formar um par correto, você ganha 5 pontos e continua jogando" />
+                                    <Label styleClass="labelPadrao2" text="4. Se errar, perde 1 ponto e passa a vez" />
+                                    <Label styleClass="labelPadrao2" text="5. O jogo termina quando todos os 12 pares forem encontrados" />
                                 </VBox>
                             </VBox>
                             
                             <VBox spacing="10.0">
                                 <Label styleClass="labelPadrao" text="🏆 Sistema de Pontuação:" />
                                 <VBox spacing="5.0">
-                                    <Label styleClass="labelPadrao2" text="• Acertar um par: +10 pontos" />
-                                    <Label styleClass="labelPadrao2" text="• Errar um par: -3 pontos" />
+                                    <Label styleClass="labelPadrao2" text="• Acertar um par: +5 pontos" />
+                                    <Label styleClass="labelPadrao2" text="• Errar um par: -1 ponto" />
                                     <Label styleClass="labelPadrao2" text="• Vence quem tiver mais pontos no final" />
+                                </VBox>
+                            </VBox>
+                            
+                            <VBox spacing="10.0">
+                                <Label styleClass="labelPadrao" text="📊 Estrutura do Jogo:" />
+                                <VBox spacing="5.0">
+                                    <Label styleClass="labelPadrao2" text="• Grid de Operações: 12 cartas com expressões matemáticas" />
+                                    <Label styleClass="labelPadrao2" text="• Grid de Resultados: 12 cartas com números (resultados)" />
+                                    <Label styleClass="labelPadrao2" text="• Total: 24 cartas formando 12 pares únicos" />
+                                    <Label styleClass="labelPadrao2" text="• Cada par deve ter uma operação e seu resultado correto" />
                                 </VBox>
                             </VBox>
                             
@@ -62,8 +72,10 @@
                                 <Label styleClass="labelPadrao" text="💡 Dicas:" />
                                 <VBox spacing="5.0">
                                     <Label styleClass="labelPadrao2" text="• Memorize as cartas reveladas para encontrar pares" />
-                                    <Label styleClass="labelPadrao2" text="• Comece pelas operações mais simples" />
+                                    <Label styleClass="labelPadrao2" text="• Comece pelas operações mais simples (soma e subtração)" />
                                     <Label styleClass="labelPadrao2" text="• Observe as cores das cartas para identificar operações" />
+                                    <Label styleClass="labelPadrao2" text="• O jogo só termina quando todos os 12 pares forem encontrados" />
+                                    <Label styleClass="labelPadrao2" text="• Use sua memória para lembrar onde estão os resultados" />
                                 </VBox>
                             </VBox>
                         </children>
