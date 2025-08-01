@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" spacing="30.0" styleClass="background" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jogodamemoria.memorymath.controllers.InstrucoesController">
+
+    <padding>
+        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+    </padding>
+
+    <children>
+        <VBox alignment="CENTER" spacing="25.0" styleClass="paneOverLay" maxWidth="800">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+            
+            <children>
+                <Label styleClass="labelVitoria" text="📚 Como Jogar" />
+                
+                <ScrollPane fitToWidth="true" maxHeight="400" styleClass="scroll-pane">
+                    <VBox spacing="20.0">
+                        <children>
+                            <VBox spacing="10.0">
+                                <Label styleClass="labelPadrao" text="🎯 Objetivo do Jogo:" />
+                                <Label styleClass="labelPadrao2" text="Encontre pares de cartas que formem operações matemáticas válidas. A primeira carta deve ser uma operação e a segunda deve ser o resultado correto." />
+                            </VBox>
+                            
+                            <VBox spacing="10.0">
+                                <Label styleClass="labelPadrao" text="🎮 Como Jogar:" />
+                                <VBox spacing="5.0">
+                                    <Label styleClass="labelPadrao2" text="1. Clique em uma carta do grid de operações (primeira carta)" />
+                                    <Label styleClass="labelPadrao2" text="2. Clique em uma carta do grid de resultados (segunda carta)" />
+                                    <Label styleClass="labelPadrao2" text="3. Se formar um par correto, você ganha 10 pontos e continua jogando" />
+                                    <Label styleClass="labelPadrao2" text="4. Se errar, perde 3 pontos e passa a vez" />
+                                    <Label styleClass="labelPadrao2" text="5. O jogo termina quando todas as cartas forem reveladas" />
+                                </VBox>
+                            </VBox>
+                            
+                            <VBox spacing="10.0">
+                                <Label styleClass="labelPadrao" text="🏆 Sistema de Pontuação:" />
+                                <VBox spacing="5.0">
+                                    <Label styleClass="labelPadrao2" text="• Acertar um par: +10 pontos" />
+                                    <Label styleClass="labelPadrao2" text="• Errar um par: -3 pontos" />
+                                    <Label styleClass="labelPadrao2" text="• Vence quem tiver mais pontos no final" />
+                                </VBox>
+                            </VBox>
+                            
+                            <VBox spacing="10.0">
+                                <Label styleClass="labelPadrao" text="🎨 Tipos de Operações:" />
+                                <VBox spacing="5.0">
+                                    <Label styleClass="labelPadrao2" text="• Soma (amarelo): 2 + 3 = 5" />
+                                    <Label styleClass="labelPadrao2" text="• Subtração (azul): 8 - 3 = 5" />
+                                    <Label styleClass="labelPadrao2" text="• Multiplicação (roxo): 2 × 3 = 6" />
+                                    <Label styleClass="labelPadrao2" text="• Divisão (verde): 12 ÷ 3 = 4" />
+                                </VBox>
+                            </VBox>
+                            
+                            <VBox spacing="10.0">
+                                <Label styleClass="labelPadrao" text="💡 Dicas:" />
+                                <VBox spacing="5.0">
+                                    <Label styleClass="labelPadrao2" text="• Memorize as cartas reveladas para encontrar pares" />
+                                    <Label styleClass="labelPadrao2" text="• Comece pelas operações mais simples" />
+                                    <Label styleClass="labelPadrao2" text="• Observe as cores das cartas para identificar operações" />
+                                </VBox>
+                            </VBox>
+                        </children>
+                    </VBox>
+                </ScrollPane>
+                
+                <HBox alignment="CENTER" spacing="15.0">
+                    <children>
+                        <Button onAction="#aoClicarComecarJogo" styleClass="button" text="Começar Jogo" />
+                        <Button onAction="#aoClicarVoltar" styleClass="button2" text="Voltar" />
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</VBox> 

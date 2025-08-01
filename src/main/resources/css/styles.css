@@ -241,3 +241,57 @@
         -fx-font-size: 28px;
     }
 }
+
+/* Estilos para a tela de instruções */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .scroll-bar:vertical {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-background-radius: 10;
+}
+
+.scroll-pane > .scroll-bar:vertical > .thumb {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-background-radius: 10;
+}
+
+/* Melhorias para desktop */
+@media (min-width: 1024px) {
+    .card {
+        -fx-pref-width: 120px;
+        -fx-pref-height: 120px;
+        -fx-min-width: 120px;
+        -fx-min-height: 120px;
+        -fx-max-width: 120px;
+        -fx-max-height: 120px;
+    }
+    
+    .button {
+        -fx-font-size: 24px;
+        -fx-padding: 15 25;
+    }
+    
+    .button2 {
+        -fx-font-size: 18px;
+        -fx-padding: 12 20;
+    }
+    
+    .labelVitoria {
+        -fx-font-size: 36px;
+    }
+    
+    .labelPadrao {
+        -fx-font-size: 28px;
+    }
+    
+    .labelPadrao2 {
+        -fx-font-size: 18px;
+    }
+}

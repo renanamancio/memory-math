@@ -28,19 +28,64 @@ public class Gerador {
     private void gerarMatrizOperacoes() {
         int linhas = matrizGeradaRes.length;
         int colunas = matrizGeradaRes[0].length;
-        List<Integer> todosResultados = new ArrayList<>();
-
-        for (int i = 0; i < linhas; i++) {
-            for (int j = 0; j < colunas; j++) {
-                int tipoOperacao = escolherOperacaoAleatoria();
-                gerarOperacao(i, j, tipoOperacao);
-                todosResultados.add(matrizGeradaRes[i][j]);
+        int totalCartas = linhas * colunas;
+        
+        // Conta quantas operações foram selecionadas
+        List<Integer> operacoesAtivas = new ArrayList<>();
+        for (int i = 0; i < operacoesEscolhidas.length; i++) {
+            if (operacoesEscolhidas[i] == 1) {
+                operacoesAtivas.add(i);
             }
         }
+        
+        int numOperacoes = operacoesAtivas.size();
+        int cartasPorOperacao = totalCartas / numOperacoes;
+        int cartasRestantes = totalCartas % numOperacoes;
+        
+        System.out.println("=== DISTRIBUIÇÃO DE OPERAÇÕES ===");
+        System.out.println("Total de cartas: " + totalCartas);
+        System.out.println("Número de operações: " + numOperacoes);
+        System.out.println("Cartas por operação: " + cartasPorOperacao);
+        System.out.println("Cartas restantes: " + cartasRestantes);
+        
+        // Cria lista de operações distribuídas
+        List<Integer> operacoesDistribuidas = new ArrayList<>();
+        for (int i = 0; i < numOperacoes; i++) {
+            int operacao = operacoesAtivas.get(i);
+            int quantidade = cartasPorOperacao + (i < cartasRestantes ? 1 : 0);
+            
+            for (int j = 0; j < quantidade; j++) {
+                operacoesDistribuidas.add(operacao);
+            }
+            
+            System.out.println("Operação " + getNomeOperacao(operacao) + ": " + quantidade + " cartas");
+        }
+        
+        // Embaralha a lista de operações
+        Collections.shuffle(operacoesDistribuidas);
+        
+        // Gera as operações na ordem embaralhada
+        int index = 0;
+        for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
+                if (index < operacoesDistribuidas.size()) {
+                    int tipoOperacao = operacoesDistribuidas.get(index++);
+                    gerarOperacao(i, j, tipoOperacao);
+                }
+            }
+        }
+        
+        System.out.println("=== FIM DA DISTRIBUIÇÃO ===\n");
+    }
 
-        Collections.shuffle(todosResultados);
-
-        redistribuirResultados(todosResultados);
+    private String getNomeOperacao(int operacao) {
+        switch (operacao) {
+            case SOMA: return "Soma";
+            case SUBTRACAO: return "Subtração";
+            case MULTIPLICACAO: return "Multiplicação";
+            case DIVISAO: return "Divisão";
+            default: return "Desconhecida";
+        }
     }
 
     private void gerarOperacao(int i, int j, int tipoOperacao) {
@@ -58,35 +103,6 @@ public class Gerador {
                 gerarDivisao(i, j);
                 break;
         }
-    }
-
-    private void redistribuirResultados(List<Integer> resultados) {
-        int linhas = matrizGeradaRes.length;
-        int colunas = matrizGeradaRes[0].length;
-        int index = 0;
-
-        for (int i = 0; i < linhas; i++) {
-            for (int j = 0; j < colunas; j++) {
-                matrizGeradaRes[i][j] = resultados.get(index++);
-                ajustarOperandosParaResultado(i, j);
-            }
-        }
-    }
-
-    private int escolherOperacaoAleatoria() {
-        List<Integer> opDisponiveis = new ArrayList<>();
-
-        for (int i = 0; i < operacoesEscolhidas.length; i++) {
-            if (operacoesEscolhidas[i] == 1) {
-                opDisponiveis.add(i);
-            }
-        }
-
-        if (opDisponiveis.isEmpty()) {
-            return SOMA;
-        }
-
-        return opDisponiveis.get(random.nextInt(opDisponiveis.size()));
     }
 
     private void gerarSoma(int i, int j) {
@@ -127,107 +143,6 @@ public class Gerador {
         matrizGeradaOps1[i][j] = dividendo;
         matrizGeradaOps2[i][j] = divisor;
         matrizGeradaRes[i][j] = dividendo / divisor;
-    }
-
-    private void ajustarOperandosParaResultado(int i, int j) {
-        int resultado = matrizGeradaRes[i][j];
-        int operacao = escolherOperacaoAleatoria();
-
-        switch (operacao) {
-            case SOMA:
-                matrizGeradaOps1[i][j] = random.nextInt(resultado + 1);
-                matrizGeradaOps2[i][j] = resultado - matrizGeradaOps1[i][j];
-                break;
-            case SUBTRACAO:
-                matrizGeradaOps1[i][j] = resultado + random.nextInt(100) + 1;
-                matrizGeradaOps2[i][j] = matrizGeradaOps1[i][j] - resultado;
-                break;
-            case MULTIPLICACAO:
-                List<Integer> fatores = encontrarFatores(resultado);
-                if (!fatores.isEmpty() && fatores.size() >= 2) {
-                    int idx = random.nextInt(fatores.size() / 2) * 2;
-                    if (idx + 1 < fatores.size()) {
-                        matrizGeradaOps1[i][j] = fatores.get(idx);
-                        matrizGeradaOps2[i][j] = fatores.get(idx + 1);
-                    } else {
-                        matrizGeradaOps1[i][j] = random.nextInt(resultado + 1);
-                        matrizGeradaOps2[i][j] = resultado - matrizGeradaOps1[i][j];
-                    }
-                } else {
-                    matrizGeradaOps1[i][j] = random.nextInt(resultado + 1);
-                    matrizGeradaOps2[i][j] = resultado - matrizGeradaOps1[i][j];
-                }
-                break;
-            case DIVISAO:
-                List<Integer> divisores = encontrarDivisores(resultado);
-                if (!divisores.isEmpty()) {
-                    int idx = random.nextInt(divisores.size());
-                    matrizGeradaOps2[i][j] = divisores.get(idx);
-                    matrizGeradaOps1[i][j] = resultado * matrizGeradaOps2[i][j];
-                } else {
-                    matrizGeradaOps1[i][j] = random.nextInt(resultado + 1);
-                    matrizGeradaOps2[i][j] = resultado - matrizGeradaOps1[i][j];
-                }
-                break;
-        }
-
-        if (matrizGeradaOps1[i][j] == null) {
-            matrizGeradaOps1[i][j] = 0;
-        }
-        if (matrizGeradaOps2[i][j] == null) {
-            matrizGeradaOps2[i][j] = 0;
-        }
-    }
-
-    private List<Integer> encontrarFatores(int numero) {
-        List<Integer> fatores = new ArrayList<>();
-
-        if (numero == 0) {
-            fatores.add(0);
-            fatores.add(1);
-            return fatores;
-        }
-
-        if (numero == 1) {
-            fatores.add(1);
-            fatores.add(1);
-            return fatores;
-        }
-
-        for (int i = 1; i <= Math.sqrt(numero); i++) {
-            if (numero % i == 0) {
-                fatores.add(i);
-                fatores.add(numero / i);
-            }
-        }
-
-        if (fatores.isEmpty()) {
-            fatores.add(1);
-            fatores.add(numero);
-        }
-        
-        return fatores;
-    }
-
-    private List<Integer> encontrarDivisores(int numero) {
-        List<Integer> divisores = new ArrayList<>();
-
-        if (numero == 0) {
-            divisores.add(1);
-            return divisores;
-        }
-
-        for (int i = 1; i <= 10 && i <= numero; i++) {
-            if (numero % i == 0) {
-                divisores.add(i);
-            }
-        }
-
-        if (divisores.isEmpty()) {
-            divisores.add(1);
-        }
-        
-        return divisores;
     }
 
     public Integer[][] getMatrizOperandos1() {

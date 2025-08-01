@@ -16,9 +16,13 @@ public class Main extends Application {
         SceneManager.getInstance().carregarCena("/fxml/menu-view.fxml");
 //        Image icone = new Image(Main.class.getResourceAsStream("/image/logoJogo.png"));
 //        primaryStage.getIcons().add(icone);
-        primaryStage.setTitle("Memory Math");
-        primaryStage.setMinWidth(960);
-        primaryStage.setMinHeight(540);
+        primaryStage.setTitle("Memory Math - Jogo de Memória Matemática");
+        primaryStage.setMinWidth(1024);
+        primaryStage.setMinHeight(768);
+        primaryStage.setWidth(1200);
+        primaryStage.setHeight(800);
+        primaryStage.setResizable(true);
+        primaryStage.centerOnScreen();
         primaryStage.show();
     }
 

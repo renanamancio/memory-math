@@ -19,7 +19,7 @@
            </rowConstraints>
             <children>
                   <Label fx:id="turnIndicatorLabel" text="Vez do Jogador 1" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-               <Button mnemonicParsing="false" prefHeight="28.0" prefWidth="108.0" text="Encerrar Partida" styleClass="button2"/>
+               <Button mnemonicParsing="false" onAction="#encerraPartida" prefHeight="28.0" prefWidth="108.0" text="Encerrar Partida" styleClass="button2"/>
             </children>
          </GridPane>
         </VBox>

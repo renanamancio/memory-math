@@ -1,190 +1,160 @@
-# 🧮 Memory Math - Jogo de Memória Matemático
+# Memory Math - Jogo de Memória Matemática
 
-[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.java.net/)
-[![JavaFX](https://img.shields.io/badge/JavaFX-21-blue.svg)](https://openjfx.io/)
-[![Maven](https://img.shields.io/badge/Maven-3.13.0-red.svg)](https://maven.apache.org/)
-[![License](https://img.shields.io/badge/Licenza-Commons_Clause%20%2B%20MIT-red)](LICENSE.md)
+Um jogo educativo de memória que combina matemática com diversão! Encontre pares de cartas que formem operações matemáticas válidas.
 
-## 📖 Descrição
+## 🎮 Características
 
-**Memory Math** é um jogo educativo de memória que combina o clássico jogo da memória com operações matemáticas. Os jogadores devem encontrar pares de cartas onde uma carta contém uma operação matemática e a outra contém o resultado correspondente.
+- **Sistema de Pontuação**: +10 pontos por acerto, -3 pontos por erro
+- **Modos de Jogo**: PvP (Jogador vs Jogador) e PvE (Jogador vs IA)
+- **Dificuldades da IA**: Fácil, Médio e Difícil
+- **Operações Matemáticas**: Soma, Subtração, Multiplicação e Divisão
 
-O jogo foi desenvolvido em **Java** utilizando **JavaFX** para a interface gráfica, oferecendo uma experiência interativa e educativa para crianças e adultos que desejam praticar matemática de forma divertida.
+- **Interface Responsiva**: Otimizada para desktop
+- **Sons e Música**: Efeitos sonoros e música de fundo
 
-## 🎮 Características Principais
+## 🚀 Como Jogar
 
-### ✨ Funcionalidades
-- **Modo PvP (Player vs Player)**: Jogo entre dois jogadores humanos
-- **Modo PvE (Player vs Environment)**: Jogo contra IA com três níveis de dificuldade
-- **Operações Matemáticas**: Soma, subtração, multiplicação e divisão
-- **Sistema de Pontuação**: Controle de pontuação por jogador
-- **Interface Responsiva**: Design adaptável e moderno
-- **Efeitos Sonoros**: Sons para ações do jogo (virar carta, acerto, erro, vitória)
-- **Música de Fundo**: Trilha sonora durante o jogo
+1. **Objetivo**: Encontre pares de cartas que formem operações matemáticas válidas
+2. **Primeira Carta**: Clique em uma carta do grid de operações
+3. **Segunda Carta**: Clique em uma carta do grid de resultados
+4. **Pontuação**: 
+   - Acertar um par: +10 pontos
+   - Errar um par: -3 pontos
+5. **Vitória**: Quem tiver mais pontos no final vence!
 
-### 🎯 Níveis de Dificuldade da IA
-- **Fácil**: IA com memória limitada (0 cartas)
-- **Médio**: IA com memória moderada (5 cartas)
-- **Difícil**: IA com memória perfeita (todas as cartas)
+## 🛠️ Requisitos
 
-### 🎨 Interface Gráfica
-- Design moderno e intuitivo
-- Animações suaves de transição
-- Cores diferenciadas por tipo de operação
-- Layout responsivo que se adapta ao tamanho da janela
+- Java 21 ou superior
+- Maven 3.6 ou superior
 
-## 🛠️ Tecnologias Utilizadas
+## 📦 Instalação e Execução
 
-### Backend
-- **Java 21**: Linguagem principal
-- **JavaFX 21**: Framework para interface gráfica
-- **Maven**: Gerenciador de dependências e build
+### Opção 1: Executar via Maven
+```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/memoryMath.git
+cd memoryMath
 
-### Frontend
-- **FXML**: Definição de layouts
-- **CSS**: Estilização da interface
-- **JavaFX Controls**: Componentes da interface
+# Compile e execute
+mvn clean javafx:run
+```
 
-### Recursos
-- **Imagens**: PNG e JPG para cartas e elementos visuais
-- **Áudio**: MP3 para efeitos sonoros e música
+### Opção 2: Gerar JAR Executável
+
+Para gerar um arquivo JAR executável:
+
+```bash
+# Compile o projeto
+mvn clean compile
+
+# Gere o JAR com todas as dependências
+mvn clean package
+
+# O JAR será gerado em: target/memoryMath-1.0-SNAPSHOT.jar
+```
+
+### Executar o JAR
+```bash
+# Execute o JAR gerado
+java -jar target/memoryMath-1.0-SNAPSHOT.jar
+```
 
 ## 📁 Estrutura do Projeto
 
 ```
 memoryMath/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── jogodamemoria/
-│   │   │       └── memorymath/
-│   │   │           ├── controllers/          # Controladores FXML
-│   │   │           ├── model/                # Modelos de dados
-│   │   │           ├── transitions/          # Gerenciamento de cenas
-│   │   │           ├── util/                 # Utilitários
-│   │   │           ├── AIPlayer.java         # Jogador IA
-│   │   │           ├── GameManager.java      # Gerenciador do jogo
-│   │   │           ├── HumanPlayer.java      # Jogador humano
-│   │   │           ├── Main.java             # Classe principal
-│   │   │           └── Player.java           # Classe base do jogador
-│   │   └── resources/
-│   │       ├── css/                          # Estilos CSS
-│   │       ├── fxml/                         # Layouts FXML
-│   │       ├── images/                       # Imagens do jogo
-│   │       └── sounds/                       # Arquivos de áudio
-│   └── test/                                 # Testes unitários
-├── pom.xml                                   # Configuração Maven
-└── README.md                                 # Este arquivo
+├── src/main/java/jogodamemoria/memorymath/
+│   ├── controllers/          # Controladores das telas
+│   ├── model/               # Modelos de dados
+│   ├── transitions/         # Gerenciador de transições
+│   ├── util/               # Utilitários (áudio, etc.)
+│   ├── AIPlayer.java       # Lógica da IA
+│   ├── GameManager.java    # Gerenciador do jogo
+│   ├── HumanPlayer.java    # Jogador humano
+│   ├── Main.java           # Classe principal
+│   └── Player.java         # Classe base do jogador
+├── src/main/resources/
+│   ├── css/                # Estilos CSS
+│   ├── fxml/               # Arquivos FXML das telas
+│   ├── images/             # Imagens do jogo
+│   └── sounds/             # Arquivos de áudio
+└── pom.xml                 # Configuração Maven
 ```
 
-## 🚀 Como Executar
+### 📁 Arquivos Criados/Modificados
 
-### Pré-requisitos
-- **Java 21** ou superior
-- **Maven 3.6** ou superior
+- ✅ `instrucoes-view.fxml` - Tela de instruções
+- ✅ `InstrucoesController.java` - Controlador das instruções
+- ✅ `GERAR_JAR.md` - Instruções para JAR
+- ✅ `run.bat` e `run.sh` - Scripts de execução
+- ✅ Atualizado `pom.xml` com plugin Maven Shade
+- ✅ Melhorado `README.md` com documentação completa
 
-### Instalação e Execução
+## 🎯 Funcionalidades Implementadas
 
-1. **Clone o repositório**
-   ```bash
-   git clone https://github.com/renanamancio/memory-math
-   cd memory-Math
-   ```
+### ✅ Correções Realizadas
+- **Som de Derrota**: Corrigido para tocar quando a IA vence
+- **Sistema de Pontuação**: Implementado (+10/-3 pontos)
+- **Tela de Instruções**: Criada com regras completas
+- **Otimização Desktop**: Interface redimensionada para desktop
+- **Limpeza de Código**: Removidos métodos não utilizados
 
-2. **Compile o projeto**
-   ```bash
-   mvn clean compile
-   ```
+### 🆕 Novas Funcionalidades
+- **Responsividade**: Melhor adaptação para diferentes telas
+- **Melhorias de UX**: Feedback visual e sonoro aprimorado
 
-3. **Execute o jogo**
-   ```bash
-   mvn javafx:run
-   ```
+## 🎨 Interface
 
-### Execução Alternativa
-```bash
-# Compilar e executar em um comando
-mvn clean javafx:run
-```
-
-## 🎮 Como Jogar
-
-### Iniciando uma Partida
-1. Execute o jogo
-2. Clique em "Nova Partida"
-3. Escolha o modo de jogo (PvP ou PvE)
-4. Configure os jogadores e operações
-5. Clique em "Iniciar Jogo"
-
-### Regras do Jogo
-- O tabuleiro possui duas grades: **Operações** e **Resultados**
-- Cada carta de operação tem um par correspondente na grade de resultados
-- Clique em uma carta para revelá-la
-- Clique em uma segunda carta para tentar formar um par
-- Se as cartas formarem um par correto, você ganha pontos e pode jogar novamente
-- Se não formarem um par, elas voltam a ficar ocultas e o turno passa para o outro jogador
-- O jogo termina quando todos os pares forem encontrados
-- O jogador com mais pontos vence
-
-### Pontuação
-- **Par correto**: +1 ponto
-- **Par incorreto**: 0 pontos (turno passa para o outro jogador)
+- **Design Moderno**: Interface limpa e intuitiva
+- **Responsiva**: Adapta-se a diferentes tamanhos de tela
+- **Feedback Visual**: Animações e efeitos visuais
+- **Acessibilidade**: Cores contrastantes e textos legíveis
 
 ## 🔧 Configuração
 
-### Personalização de Operações
-O jogo permite selecionar quais tipos de operações matemáticas serão utilizadas:
-- ✅ **Soma**: Operações de adição
-- ✅ **Subtração**: Operações de subtração  
-- ✅ **Multiplicação**: Operações de multiplicação
-- ✅ **Divisão**: Operações de divisão
-
-### Configuração da IA
-- **Fácil**: IA com comportamento aleatório
-- **Médio**: IA com memória limitada de 5 cartas
-- **Difícil**: IA com memória perfeita de todas as cartas
-
-## 🎨 Personalização
-
-### Modificando Estilos
-Os estilos visuais podem ser personalizados editando o arquivo:
-```
-src/main/resources/css/styles.css
-```
-
-### Adicionando Novos Sons
-Para adicionar novos efeitos sonoros:
-1. Adicione o arquivo de áudio em `src/main/resources/sounds/`
-2. Modifique a classe `AudioManager` para incluir o novo som
-
-### Alterando Imagens
-Para modificar as imagens das cartas:
-1. Substitua os arquivos em `src/main/resources/images/`
-2. Mantenha os mesmos nomes de arquivo ou atualize as referências no código
-
-## 🧪 Testes
-
-### Executando Testes
+### Desenvolvimento
 ```bash
+# Instalar dependências
+mvn dependency:resolve
+
+# Executar testes (se houver)
 mvn test
+
+# Gerar documentação
+mvn javadoc:javadoc
 ```
 
-### Cobertura de Testes
+### Produção
 ```bash
-mvn jacoco:report
+# Gerar JAR otimizado
+mvn clean package -DskipTests
+
+# Executar JAR
+java -jar target/memoryMath-1.0-SNAPSHOT.jar
 ```
 
-## 📦 Build
 
-### Criando JAR Executável
-```bash
-mvn clean package
-```
 
-### Criando Distribuição
-```bash
-mvn javafx:jlink
-```
+## 🎵 Áudio
+
+- **Música de Fundo**: Ambiente relaxante
+- **Efeitos Sonoros**: 
+  - Revelar carta
+  - Acertar par
+  - Errar par
+  - Vitória
+  - Derrota
+
+## 🚀 Melhorias de Performance
+
+- **Cache de Imagens**: Carregamento otimizado
+- **Gerenciamento de Memória**: Liberação adequada de recursos
+- **Animações Suaves**: Transições fluidas
+- **Código Limpo**: Remoção de métodos não utilizados
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE.md` para mais detalhes.
 
 ## 🤝 Contribuição
 
@@ -194,34 +164,10 @@ mvn javafx:jlink
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-### Padrões de Código
-- Siga as convenções de nomenclatura Java
-- Adicione comentários Javadoc para métodos públicos
-- Mantenha a cobertura de testes acima de 80%
-- Use nomes descritivos para variáveis e métodos
-
-## 📝 Licença
-Este projeto permite colaboração aberta, mas proíbe redistribuição, sublicenciamento e uso comercial.  
-Leia o arquivo [LICENSE](LICENSE.md) para detalhes.
-
-## 👥 Autores
-
-- **Memory Math Team** - *Desenvolvimento inicial* - [GitHub](https://github.com/renanamancio)
-
-## 🙏 Agradecimentos
-
-- JavaFX Community
-- Maven Community
-- Contribuidores e testadores do projeto
-
 ## 📞 Suporte
 
-Se você encontrar algum problema ou tiver sugestões:
-
-1. Verifique se há uma [issue](https://github.com/renanamancio/memory-math/issues) relacionada
-2. Crie uma nova issue com detalhes do problema
-3. Para dúvidas gerais, abra uma [discussion](https://github.com/renanamancio/memory-math/discussions)
+Para dúvidas ou sugestões, abra uma issue no repositório.
 
 ---
 
-**Divirta-se jogando Memory Math! 🎮🧮** 
+**Desenvolvido com ❤️ pela equipe MemoryMath** 

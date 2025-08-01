@@ -21,6 +21,7 @@ import jogodamemoria.memorymath.Player;
 import jogodamemoria.memorymath.AIPlayer;
 import jogodamemoria.memorymath.model.Card;
 import jogodamemoria.memorymath.model.Gerador;
+import jogodamemoria.memorymath.transitions.SceneManager;
 import jogodamemoria.memorymath.util.ImageUtils;
 import jogodamemoria.memorymath.util.AlertUtils;
 import jogodamemoria.memorymath.util.ResourceLoadException;
@@ -41,8 +42,8 @@ import java.util.Collections;
 public class GameController {
 
     private static final int NUM_COLS = 3;
-    private static final int NUM_ROWS = 3;
-    private static final int TOTAL_PAIRS = 9;
+    private static final int NUM_ROWS = 4;
+    private static final int TOTAL_PAIRS = 12;
 
     private static final String CARD_BACK_IMAGE_PATH = "/images/verso-carta.png";
     private static final String CARD_REVEL_IMAGE_SOMA = "/images/amareloEstimulo.jpg";
@@ -73,22 +74,37 @@ public class GameController {
 
     private Integer[][] resultadosEmbaralhados;
 
-    private boolean continuarJogando = true;
-
     private boolean turnoIA = false;
     private PauseTransition delayIA;
+    
+    // Constantes para o novo sistema de pontuação
+    private static final int PONTOS_ACERTO = 5;
+    private static final int PONTOS_ERRO = -1;
 
     /**
      * Inicializa o controlador do jogo, carregando recursos e configurando o tabuleiro.
      */
     @FXML
     public void initialize() {
+        // Garante que a contagem seja inicializada corretamente
+        cartasEncontradas = 0;
+        
         loadAllCardImages();
         setupGame();
         setupResponsiveLayout();
         populateGrids();
         setupPlayerInfo();
         updateTurnIndicator();
+        
+        System.out.println("Jogo inicializado! Total de cartas: " + TOTAL_CARTAS + " (12 pares)");
+        System.out.println("Contagem inicial de cartas encontradas: " + cartasEncontradas);
+        System.out.println("NUM_ROWS = " + NUM_ROWS + ", NUM_COLS = " + NUM_COLS);
+        System.out.println("TOTAL_CARTAS = " + TOTAL_CARTAS + " (deve ser 12)");
+    }
+
+    @FXML
+    private void encerraPartida() {
+        SceneManager.getInstance().carregarCena("/fxml/menu-view.fxml");
     }
 
     /**
@@ -124,6 +140,8 @@ public class GameController {
         GameManager gm = GameManager.getInstance();
         List<Card.OperationType> operacoesSelecionadas = gm.getSelectedOperations();
         int[] operacoesArray = new int[4];
+        
+        // Configura array de operações selecionadas
         for (Card.OperationType op : operacoesSelecionadas) {
             switch (op) {
                 case SOMA:
@@ -142,17 +160,11 @@ public class GameController {
         }
 
         gerador = new Gerador(NUM_ROWS, NUM_COLS, operacoesArray);
-
         embaralharResultados();
 
         System.out.println("=== CONFIGURAÇÃO DO JOGO ===");
         System.out.println("Operações selecionadas: " + operacoesSelecionadas);
         System.out.println("Grid: " + NUM_ROWS + "x" + NUM_COLS + " (" + TOTAL_PAIRS + " pares)");
-        System.out.println("Array de operações: ");
-        for (int i = 0; i < operacoesArray.length; i++) {
-            System.out.println("  [" + i + "] = " + operacoesArray[i]);
-        }
-        System.out.println("Gerador inicializado com sucesso!");
         System.out.println("=== FIM DA CONFIGURAÇÃO ===\n");
     }
 
@@ -176,14 +188,6 @@ public class GameController {
             for (int j = 0; j < NUM_COLS; j++) {
                 resultadosEmbaralhados[i][j] = todosResultados.get(index++);
             }
-        }
-        
-        System.out.println("Resultados embaralhados:");
-        for (int i = 0; i < NUM_ROWS; i++) {
-            for (int j = 0; j < NUM_COLS; j++) {
-                System.out.print(resultadosEmbaralhados[i][j] + "\t");
-            }
-            System.out.println();
         }
     }
 
@@ -265,13 +269,7 @@ public class GameController {
         }
     }
 
-    /**
-     * Cria uma imagem padrão como fallback quando a imagem original não pode ser carregada.
-     * @return Image padrão
-     */
-    private Image createDefaultCardImage() {
-        return null;
-    }
+
 
     /**
      * Popula os grids de operações e resultados.
@@ -340,7 +338,6 @@ public class GameController {
         }
         
         if (availableCards.isEmpty()) {
-            System.out.println("IA não encontrou cartas de operação disponíveis");
             return;
         }
 
@@ -349,8 +346,6 @@ public class GameController {
         if (bestMove != null) {
             StackPane cardToClick = findCardById(bestMove);
             if (cardToClick != null) {
-                System.out.println("IA escolheu: " + bestMove);
-
                 if (!aguardandoSegundaCarta) {
                     primeiraCartaSelecionada = cardToClick;
                     revealCard(cardToClick);
@@ -383,7 +378,6 @@ public class GameController {
         }
         
         if (availableCards.isEmpty()) {
-            System.out.println("IA não encontrou segunda carta de resultado disponível");
             return;
         }
 
@@ -392,8 +386,6 @@ public class GameController {
         if (bestMove != null) {
             StackPane cardToClick = findCardById(bestMove);
             if (cardToClick != null) {
-                System.out.println("IA escolheu segunda carta: " + bestMove);
-
                 segundaCartaSelecionada = cardToClick;
                 revealCard(cardToClick);
                 registerCardForAI(cardToClick);
@@ -405,29 +397,7 @@ public class GameController {
         }
     }
 
-    /**
-     * Obtém lista de cartas disponíveis para jogar.
-     * @return Lista de IDs de cartas disponíveis
-     */
-    private List<String> getAvailableCards() {
-        List<String> availableCards = new ArrayList<>();
 
-        for (int i = 0; i < operacoesGrid.getChildren().size(); i++) {
-            StackPane card = (StackPane) operacoesGrid.getChildren().get(i);
-            if (!isCardRevealed(card) && !isCardMatched(card)) {
-                availableCards.add(card.getId());
-            }
-        }
-
-        for (int i = 0; i < resultadosGrid.getChildren().size(); i++) {
-            StackPane card = (StackPane) resultadosGrid.getChildren().get(i);
-            if (!isCardRevealed(card) && !isCardMatched(card)) {
-                availableCards.add(card.getId());
-            }
-        }
-        
-        return availableCards;
-    }
 
     /**
      * Encontra uma carta pelo ID.
@@ -458,8 +428,22 @@ public class GameController {
      */
     private void registerCardForAI(StackPane card) {
         GameManager gm = GameManager.getInstance();
-        if (gm.getCurrentPlayer() instanceof AIPlayer) {
-            AIPlayer aiPlayer = (AIPlayer) gm.getCurrentPlayer();
+        // Registra a carta para todas as IAs no jogo (se houver)
+        if (gm.getPlayer1() instanceof AIPlayer) {
+            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer1();
+            CardInfo cardInfo = getCardInfo(card);
+
+            AIPlayer.CardInfo aiCardInfo = new AIPlayer.CardInfo(
+                cardInfo.displayText, 
+                cardInfo.result, 
+                cardInfo.isOperation
+            );
+            
+            aiPlayer.registrarCartaRevelada(card.getId(), aiCardInfo);
+        }
+        
+        if (gm.getPlayer2() instanceof AIPlayer) {
+            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer2();
             CardInfo cardInfo = getCardInfo(card);
 
             AIPlayer.CardInfo aiCardInfo = new AIPlayer.CardInfo(
@@ -478,9 +462,34 @@ public class GameController {
      */
     private void removeCardFromAI(StackPane card) {
         GameManager gm = GameManager.getInstance();
-        if (gm.getCurrentPlayer() instanceof AIPlayer) {
-            AIPlayer aiPlayer = (AIPlayer) gm.getCurrentPlayer();
+        // Remove a carta de todas as IAs no jogo (se houver)
+        if (gm.getPlayer1() instanceof AIPlayer) {
+            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer1();
             aiPlayer.removerCartaDaMemoria(card.getId());
+        }
+        
+        if (gm.getPlayer2() instanceof AIPlayer) {
+            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer2();
+            aiPlayer.removerCartaDaMemoria(card.getId());
+        }
+    }
+    
+    /**
+     * Registra um par de cartas abertas na memória das IAs.
+     * @param card1 Primeira carta do par
+     * @param card2 Segunda carta do par
+     */
+    private void registerPairForAI(StackPane card1, StackPane card2) {
+        GameManager gm = GameManager.getInstance();
+        // Registra o par para todas as IAs no jogo (se houver)
+        if (gm.getPlayer1() instanceof AIPlayer) {
+            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer1();
+            aiPlayer.registrarParAberto(card1.getId(), card2.getId());
+        }
+        
+        if (gm.getPlayer2() instanceof AIPlayer) {
+            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer2();
+            aiPlayer.registrarParAberto(card1.getId(), card2.getId());
         }
     }
 
@@ -494,18 +503,13 @@ public class GameController {
             System.err.println("Grid é null para prefixo: " + prefix);
             return;
         }
-
-        System.out.println("Populando grid " + prefix + " com " + NUM_ROWS + "x" + NUM_COLS + " cartas");
         
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
                 StackPane cardPane = createCardPane(prefix, row, col);
                 grid.add(cardPane, col, row);
-                System.out.println("Carta criada: " + cardPane.getId() + " na posição [" + row + "," + col + "]");
             }
         }
-        
-        System.out.println("Grid " + prefix + " populado com " + grid.getChildren().size() + " cartas");
     }
 
     /**
@@ -550,15 +554,12 @@ public class GameController {
      */
     private void handleCardClick(StackPane clickedCard) {
         if (turnoIA) {
-            System.out.println("Clique bloqueado - turno da IA");
             return;
         }
         
         if (clickedCard == null || isCardRevealed(clickedCard) || isCardMatched(clickedCard)) {
             return;
         }
-
-        System.out.println("Clicou em: " + clickedCard.getId());
 
         registerCardForAI(clickedCard);
 
@@ -629,11 +630,6 @@ public class GameController {
             cardLabel.setVisible(true);
 
             AudioManager.getInstance().tocarSomRevelarCarta();
-
-            System.out.println("Carta revelada: " + card.getId() + 
-                             " - Texto: " + cardInfo.displayText + 
-                             " - Resultado: " + cardInfo.result + 
-                             " - Tipo: " + (cardInfo.operationType != null ? cardInfo.operationType : "null"));
         }
     }
 
@@ -648,13 +644,17 @@ public class GameController {
 
         if (isOperationCard(primeiraCartaSelecionada) && isResultCard(segundaCartaSelecionada)) {
             isMatch = info1.result == info2.result;
+            System.out.println("Verificando match: " + info1.displayText + " (" + info1.result + ") == " + info2.displayText + " (" + info2.result + ") = " + isMatch);
         } else if (isResultCard(primeiraCartaSelecionada) && isOperationCard(segundaCartaSelecionada)) {
             isMatch = info2.result == info1.result;
+            System.out.println("Verificando match: " + info2.displayText + " (" + info2.result + ") == " + info1.displayText + " (" + info1.result + ") = " + isMatch);
         }
         
         if (isMatch) {
+            System.out.println("MATCH ENCONTRADO!");
             handleMatch();
         } else {
+            System.out.println("NÃO É MATCH!");
             handleNoMatch();
         }
     }
@@ -663,6 +663,9 @@ public class GameController {
      * Manipula quando um par é encontrado.
      */
     private void handleMatch() {
+        System.out.println("=== HANDLE MATCH INICIADO ===");
+        System.out.println("Antes: cartasEncontradas = " + cartasEncontradas);
+        
         primeiraCartaSelecionada.getStyleClass().removeAll("erro-match");
         segundaCartaSelecionada.getStyleClass().removeAll("erro-match");
         primeiraCartaSelecionada.getStyleClass().add("matched");
@@ -672,33 +675,34 @@ public class GameController {
         removeCardFromAI(segundaCartaSelecionada);
 
         cartasEncontradas += 2;
+        System.out.println("Depois: cartasEncontradas = " + cartasEncontradas);
 
         GameManager gm = GameManager.getInstance();
         Player player = gm.getCurrentPlayer();
-        player.adicionarPonto();
+        player.adicionarPontos(PONTOS_ACERTO);
 
         updatePlayerScores();
 
         AudioManager.getInstance().tocarSomMatch();
 
+        System.out.println("Par encontrado! Cartas encontradas: " + cartasEncontradas + "/" + TOTAL_CARTAS);
+        System.out.println("Condição para terminar: " + cartasEncontradas + " >= " + TOTAL_CARTAS + " = " + (cartasEncontradas >= TOTAL_CARTAS));
+
+        // SÓ TERMINA O JOGO SE TODAS AS 12 CARTAS FOREM ENCONTRADAS
         if (cartasEncontradas >= TOTAL_CARTAS) {
+            System.out.println("TODAS AS 12 CARTAS FORAM ENCONTRADAS! Finalizando jogo...");
             handleGameEnd();
         } else {
+            System.out.println("Jogo continua... Próximo turno.");
             resetCardSelection();
 
-            if (continuarJogando) {
-                System.out.println("Par encontrado! " + player.getName() + " continua jogando.");
-
-                if (gm.getCurrentPlayer() instanceof AIPlayer) {
-                    PauseTransition aiDelay = new PauseTransition(Duration.seconds(0.5));
-                    aiDelay.setOnFinished(event -> iniciarTurnoIA());
-                    aiDelay.play();
-                }
-            } else {
-                gm.trocarTurno();
-                updateTurnIndicator();
+            if (gm.getCurrentPlayer() instanceof AIPlayer) {
+                PauseTransition aiDelay = new PauseTransition(Duration.seconds(0.5));
+                aiDelay.setOnFinished(event -> iniciarTurnoIA());
+                aiDelay.play();
             }
         }
+        System.out.println("=== HANDLE MATCH FINALIZADO ===");
     }
 
     /**
@@ -706,6 +710,15 @@ public class GameController {
      */
     private void handleNoMatch() {
         AudioManager.getInstance().tocarSomNaoMatch();
+        
+        // Registra o par aberto na memória das IAs
+        registerPairForAI(primeiraCartaSelecionada, segundaCartaSelecionada);
+        
+        // Aplica penalidade ao jogador atual
+        GameManager gm = GameManager.getInstance();
+        Player player = gm.getCurrentPlayer();
+        player.adicionarPontos(PONTOS_ERRO);
+        updatePlayerScores();
         
         primeiraCartaSelecionada.getStyleClass().removeAll("matched");
         segundaCartaSelecionada.getStyleClass().removeAll("matched");
@@ -716,7 +729,6 @@ public class GameController {
             hideCard(primeiraCartaSelecionada);
             hideCard(segundaCartaSelecionada);
             resetCardSelection();
-            GameManager gm = GameManager.getInstance();
             gm.trocarTurno();
             updateTurnIndicator();
         });
@@ -733,18 +745,74 @@ public class GameController {
     }
 
     /**
+     * Verifica se todas as cartas foram encontradas.
+     * @return true se todas as cartas foram encontradas
+     */
+    private boolean verificarTodasCartasEncontradas() {
+        int cartasMatched = 0;
+        int cartasOperacoes = 0;
+        int cartasResultados = 0;
+        
+        // Conta cartas matched no grid de operações
+        for (int i = 0; i < operacoesGrid.getChildren().size(); i++) {
+            StackPane card = (StackPane) operacoesGrid.getChildren().get(i);
+            if (isCardMatched(card)) {
+                cartasMatched++;
+                cartasOperacoes++;
+            }
+        }
+        
+        // Conta cartas matched no grid de resultados
+        for (int i = 0; i < resultadosGrid.getChildren().size(); i++) {
+            StackPane card = (StackPane) resultadosGrid.getChildren().get(i);
+            if (isCardMatched(card)) {
+                cartasMatched++;
+                cartasResultados++;
+            }
+        }
+        
+        System.out.println("=== VERIFICAÇÃO DE CARTAS ===");
+        System.out.println("Cartas matched (operações): " + cartasOperacoes);
+        System.out.println("Cartas matched (resultados): " + cartasResultados);
+        System.out.println("Total matched: " + cartasMatched + "/" + TOTAL_CARTAS);
+        System.out.println("Variável cartasEncontradas: " + cartasEncontradas);
+        System.out.println("================================");
+        
+        return cartasMatched >= TOTAL_CARTAS;
+    }
+
+    /**
      * Manipula o fim do jogo.
      */
     private void handleGameEnd() {
+        System.out.println("FINALIZANDO JOGO - Cartas encontradas: " + cartasEncontradas + "/" + TOTAL_CARTAS);
+        
         GameManager gm = GameManager.getInstance();
         Player vencedor = null;
         boolean empate = false;
+        
+        // Determina o vencedor baseado na pontuação
         if (gm.getPlayer1().getScore() == gm.getPlayer2().getScore()) {
             empate = true;
         } else {
             vencedor = gm.getPlayer1().getScore() > gm.getPlayer2().getScore() ? gm.getPlayer1() : gm.getPlayer2();
         }
         gm.setVencedor(empate ? null : vencedor);
+        
+        // Toca som apropriado baseado no resultado
+        if (empate) {
+            AudioManager.getInstance().tocarSomVitoria(); // Som neutro para empate
+        } else if (gm.getGameMode() == GameManager.GameMode.PVE) {
+            if (vencedor instanceof AIPlayer) {
+                AudioManager.getInstance().tocarSomDerrota(); // Som de derrota quando IA vence
+            } else {
+                AudioManager.getInstance().tocarSomVitoria(); // Som de vitória quando jogador vence
+            }
+        } else {
+            AudioManager.getInstance().tocarSomVitoria(); // Som de vitória para PvP
+        }
+        
+        System.out.println("JOGO FINALIZADO COM SUCESSO! Todas as " + TOTAL_CARTAS + " cartas foram encontradas.");
         jogodamemoria.memorymath.transitions.SceneManager.getInstance().carregarCena("/fxml/vitoria-view.fxml");
     }
 
@@ -884,18 +952,7 @@ public class GameController {
         }
     }
 
-    /**
-     * Exibe uma mensagem de erro.
-     * @param title Título do erro
-     * @param message Mensagem do erro
-     */
-    private void showError(String title, String message) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
+
 
     /**
      * Classe interna para armazenar informações de uma carta.

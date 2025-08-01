@@ -18,6 +18,7 @@
                </VBox.margin>
             </ImageView>
             <Button maxWidth="300" onAction="#aoClicarJogar" styleClass="button" text="Nova Partida" />
+            <Button maxWidth="300" onAction="#aoClicarInstrucoes" styleClass="button2" text="📚 Instruções" />
          </children>
       </VBox>
    </center>

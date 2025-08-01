@@ -18,6 +18,14 @@ public abstract class Player {
     public void adicionarPonto() {
         this.score++;
     }
+    
+    public void adicionarPontos(int pontos) {
+        this.score += pontos;
+        // Garante que a pontuação não fique negativa
+        if (this.score < 0) {
+            this.score = 0;
+        }
+    }
 
     /**
      * Executa a lógica do turno do jogador (humano ou IA).

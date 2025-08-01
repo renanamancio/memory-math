@@ -18,6 +18,7 @@ public class AudioManager {
     private MediaPlayer somMatch;
     private MediaPlayer somNaoMatch;
     private MediaPlayer somVitoria;
+    private MediaPlayer somDerrota;
     
     private boolean somAtivado = true;
     private boolean musicaAtivada = true;
@@ -81,6 +82,16 @@ public class AudioManager {
                 somVitoria = new MediaPlayer(somMatch.getMedia());
                 somVitoria.setVolume(volumeEfeitos);
             }
+
+            URL somDerrotaUrl = getClass().getResource("/sounds/derrota.mp3");
+            if (somDerrotaUrl != null) {
+                Media mediaDerrota = new Media(somDerrotaUrl.toExternalForm());
+                somDerrota = new MediaPlayer(mediaDerrota);
+                somDerrota.setVolume(volumeEfeitos);
+            } else {
+                somDerrota = new MediaPlayer(somNaoMatch.getMedia());
+                somDerrota.setVolume(volumeEfeitos);
+            }
             
         } catch (Exception e) {
             System.err.println("Erro ao carregar sons: " + e.getMessage());
@@ -128,6 +139,17 @@ public class AudioManager {
             somVitoria.stop();
             somVitoria.seek(Duration.ZERO);
             somVitoria.play();
+        }
+    }
+    
+    /**
+     * Toca o som de derrota.
+     */
+    public void tocarSomDerrota() {
+        if (somAtivado && somDerrota != null) {
+            somDerrota.stop();
+            somDerrota.seek(Duration.ZERO);
+            somDerrota.play();
         }
     }
     
@@ -213,6 +235,9 @@ public class AudioManager {
         if (somVitoria != null) {
             somVitoria.setVolume(volumeEfeitos);
         }
+        if (somDerrota != null) {
+            somDerrota.setVolume(volumeEfeitos);
+        }
     }
     
     /**
@@ -261,6 +286,9 @@ public class AudioManager {
         }
         if (somVitoria != null) {
             somVitoria.dispose();
+        }
+        if (somDerrota != null) {
+            somDerrota.dispose();
         }
     }
 } 

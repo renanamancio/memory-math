@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * Classe que representa um jogador controlado por IA.
- * Implementa diferentes níveis de dificuldade baseados na memória de cartas.
+ * Implementa diferentes níveis de dificuldade baseados na memória de cartas abertas.
  * 
  * @author MemoryMath Team
  * @version 2.0
@@ -15,9 +15,9 @@ public class AIPlayer extends Player {
      * Enumeração dos níveis de dificuldade da IA.
      */
     public enum Difficulty {
-        FACIL("Fácil", 0),
-        MEDIO("Médio", 5),
-        DIFICIL("Difícil", Integer.MAX_VALUE);
+        FACIL("Fácil", 2),      // Lembra dos 2 últimos pares abertos
+        MEDIO("Médio", 6),      // Lembra dos 6 últimos pares abertos
+        DIFICIL("Difícil", Integer.MAX_VALUE); // Lembra de todos os pares abertos
         
         private final String displayName;
         private final int memorySize;
@@ -37,8 +37,8 @@ public class AIPlayer extends Player {
     }
     
     private final Difficulty difficulty;
-    private final Queue<CardMemory> cardMemory;
-    private final Map<String, CardInfo> revealedCards;
+    private final Map<String, CardInfo> revealedCards; // Cartas abertas por qualquer jogador
+    private final Queue<CardPair> cardMemory; // Memória de pares de cartas abertas
     private final Random random;
     
     /**
@@ -48,8 +48,8 @@ public class AIPlayer extends Player {
     public AIPlayer(Difficulty difficulty) {
         super("IA - " + difficulty.getDisplayName());
         this.difficulty = difficulty;
-        this.cardMemory = new LinkedList<>();
         this.revealedCards = new HashMap<>();
+        this.cardMemory = new LinkedList<>();
         this.random = new Random();
     }
     
@@ -61,7 +61,7 @@ public class AIPlayer extends Player {
         return difficulty;
     }
     
-        /**
+    /**
      * Registra uma carta revelada na memória da IA.
      * @param idCarta ID da carta
      * @param infoCarta Informações da carta
@@ -69,20 +69,6 @@ public class AIPlayer extends Player {
     public void registrarCartaRevelada(String idCarta, CardInfo infoCarta) {
         // Adiciona à memória principal
         revealedCards.put(idCarta, infoCarta);
-        
-        // Adiciona à memória de tamanho limitado
-        CardMemory memory = new CardMemory(idCarta, infoCarta);
-        cardMemory.offer(memory);
-        
-        // Remove cartas antigas se exceder o limite de memória
-        while (cardMemory.size() > difficulty.getMemorySize()) {
-            CardMemory removed = cardMemory.poll();
-            if (removed != null) {
-                revealedCards.remove(removed.getCardId());
-            }
-        }
-        
-        System.out.println("IA registrou carta: " + idCarta + " - " + infoCarta.getDisplayText());
     }
 
     /**
@@ -91,8 +77,26 @@ public class AIPlayer extends Player {
      */
     public void removerCartaDaMemoria(String idCarta) {
         revealedCards.remove(idCarta);
-        cardMemory.removeIf(memory -> memory.getCardId().equals(idCarta));
-        System.out.println("IA removeu carta da memória: " + idCarta);
+    }
+    
+    /**
+     * Registra um par de cartas abertas na memória.
+     * @param carta1 ID da primeira carta
+     * @param carta2 ID da segunda carta
+     */
+    public void registrarParAberto(String carta1, String carta2) {
+        CardPair pair = new CardPair(carta1, carta2);
+        cardMemory.offer(pair);
+        
+        // Remove pares antigos se exceder o limite de memória
+        while (cardMemory.size() > difficulty.getMemorySize()) {
+            CardPair removed = cardMemory.poll();
+            if (removed != null) {
+                // Remove as cartas do par antigo da memória principal
+                revealedCards.remove(removed.getCarta1());
+                revealedCards.remove(removed.getCarta2());
+            }
+        }
     }
     
     /**
@@ -105,95 +109,41 @@ public class AIPlayer extends Player {
             return null;
         }
         
-        // Estratégia baseada na dificuldade
-        switch (difficulty) {
-            case FACIL:
-                return calcularJogadaFacil(cartasDisponiveis);
-            case MEDIO:
-                return calcularJogadaMedia(cartasDisponiveis);
-            case DIFICIL:
-                return calcularJogadaDificil(cartasDisponiveis);
-            default:
-                return calcularJogadaFacil(cartasDisponiveis);
-        }
-    }
-    
-        /**
-     * Calcula jogada para IA fácil (aleatória).
-     * @param cartasDisponiveis Cartas disponíveis
-     * @return ID da carta escolhida
-     */
-    private String calcularJogadaFacil(List<String> cartasDisponiveis) {
-        // IA fácil: escolhe aleatoriamente
-        int randomIndex = random.nextInt(cartasDisponiveis.size());
-        String cartaEscolhida = cartasDisponiveis.get(randomIndex);
-        System.out.println("IA Fácil escolheu aleatoriamente: " + cartaEscolhida);
-        return cartaEscolhida;
-    }
-
-    /**
-     * Calcula jogada para IA média (memória limitada).
-     * @param cartasDisponiveis Cartas disponíveis
-     * @return ID da carta escolhida
-     */
-    private String calcularJogadaMedia(List<String> cartasDisponiveis) {
-        // Primeiro, tenta encontrar um par conhecido
-        String cartaCorrespondente = encontrarCartaCorrespondente(cartasDisponiveis);
-        if (cartaCorrespondente != null) {
-            System.out.println("IA Média encontrou par conhecido: " + cartaCorrespondente);
-            return cartaCorrespondente;
+        // Primeiro, tenta encontrar um match conhecido
+        String matchConhecido = encontrarMatchConhecido(cartasDisponiveis);
+        if (matchConhecido != null) {
+            return matchConhecido;
         }
         
-        // Se não encontrar par, escolhe uma carta que ainda não viu
-        String cartaNaoVista = encontrarCartaNaoVista(cartasDisponiveis);
-        if (cartaNaoVista != null) {
-            System.out.println("IA Média escolheu carta não vista: " + cartaNaoVista);
-            return cartaNaoVista;
-        }
-        
-        // Fallback: escolhe aleatoriamente
-        return calcularJogadaFacil(cartasDisponiveis);
-    }
-
-    /**
-     * Calcula jogada para IA difícil (memória completa).
-     * @param cartasDisponiveis Cartas disponíveis
-     * @return ID da carta escolhida
-     */
-    private String calcularJogadaDificil(List<String> cartasDisponiveis) {
-        // IA difícil: sempre tenta encontrar o melhor par
-        String cartaCorrespondente = encontrarCartaCorrespondente(cartasDisponiveis);
-        if (cartaCorrespondente != null) {
-            System.out.println("IA Difícil encontrou par ótimo: " + cartaCorrespondente);
-            return cartaCorrespondente;
-        }
-        
-        // Se não há par conhecido, escolhe a carta que pode revelar mais informações
-        String cartaEstrategica = encontrarCartaEstrategica(cartasDisponiveis);
+        // Se não encontrar match, escolhe uma carta estratégica
+        String cartaEstrategica = escolherCartaEstrategica(cartasDisponiveis);
         if (cartaEstrategica != null) {
-            System.out.println("IA Difícil escolheu carta estratégica: " + cartaEstrategica);
             return cartaEstrategica;
         }
         
         // Fallback: escolhe aleatoriamente
-        return calcularJogadaFacil(cartasDisponiveis);
+        int randomIndex = random.nextInt(cartasDisponiveis.size());
+        return cartasDisponiveis.get(randomIndex);
     }
     
-        /**
-     * Encontra uma carta que forma par com uma carta já conhecida.
+    /**
+     * Encontra uma carta que forma match com uma carta já conhecida.
      * @param cartasDisponiveis Cartas disponíveis
-     * @return ID da carta que forma par, ou null se não encontrar
+     * @return ID da carta que forma match, ou null se não encontrar
      */
-    private String encontrarCartaCorrespondente(List<String> cartasDisponiveis) {
-        // Procura por pares conhecidos
+    private String encontrarMatchConhecido(List<String> cartasDisponiveis) {
         for (String idCarta : cartasDisponiveis) {
-            CardInfo infoCarta = obterInfoCartaPorId(idCarta);
+            CardInfo infoCarta = revealedCards.get(idCarta);
             if (infoCarta != null) {
-                // Procura por uma carta que forme par com esta
+                // Procura por uma carta que forme match com esta
                 for (Map.Entry<String, CardInfo> entry : revealedCards.entrySet()) {
-                    if (!entry.getKey().equals(idCarta) && 
-                        entry.getValue().getResult() == infoCarta.getResult() &&
-                        saoTiposDiferentes(entry.getKey(), idCarta)) {
+                    String outraCarta = entry.getKey();
+                    CardInfo infoOutraCarta = entry.getValue();
+                    
+                    // Verifica se são cartas diferentes e formam um match
+                    if (!outraCarta.equals(idCarta) && 
+                        infoCarta.getResult() == infoOutraCarta.getResult() &&
+                        saoTiposDiferentes(idCarta, outraCarta)) {
                         return idCarta;
                     }
                 }
@@ -201,51 +151,49 @@ public class AIPlayer extends Player {
         }
         return null;
     }
-
+    
     /**
-     * Encontra uma carta que ainda não foi vista pela IA.
-     * @param cartasDisponiveis Cartas disponíveis
-     * @return ID da carta não vista, ou null se todas foram vistas
-     */
-    private String encontrarCartaNaoVista(List<String> cartasDisponiveis) {
-        for (String idCarta : cartasDisponiveis) {
-            if (!revealedCards.containsKey(idCarta)) {
-                return idCarta;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Encontra uma carta estratégica para revelar (para IA difícil).
+     * Escolhe uma carta estratégica para revelar.
      * @param cartasDisponiveis Cartas disponíveis
      * @return ID da carta estratégica, ou null se não encontrar
      */
-    private String encontrarCartaEstrategica(List<String> cartasDisponiveis) {
-        // Para IA difícil, escolhe uma carta que pode revelar informações úteis
-        // Prioriza cartas de operação sobre cartas de resultado
+    private String escolherCartaEstrategica(List<String> cartasDisponiveis) {
+        // Prioriza cartas que ainda não foram vistas
+        List<String> cartasNaoVistas = new ArrayList<>();
         List<String> cartasOperacao = new ArrayList<>();
         List<String> cartasResultado = new ArrayList<>();
         
         for (String idCarta : cartasDisponiveis) {
-            if (idCarta.contains("op")) {
-                cartasOperacao.add(idCarta);
-            } else if (idCarta.contains("re")) {
-                cartasResultado.add(idCarta);
+            if (!revealedCards.containsKey(idCarta)) {
+                cartasNaoVistas.add(idCarta);
+            } else {
+                if (idCarta.contains("op")) {
+                    cartasOperacao.add(idCarta);
+                } else if (idCarta.contains("re")) {
+                    cartasResultado.add(idCarta);
+                }
             }
         }
         
-        // Prefere cartas de operação para obter mais informações
+        // Prioriza cartas não vistas
+        if (!cartasNaoVistas.isEmpty()) {
+            return cartasNaoVistas.get(random.nextInt(cartasNaoVistas.size()));
+        }
+        
+        // Se não há cartas não vistas, prioriza cartas de operação
         if (!cartasOperacao.isEmpty()) {
             return cartasOperacao.get(random.nextInt(cartasOperacao.size()));
-        } else if (!cartasResultado.isEmpty()) {
+        }
+        
+        // Fallback: qualquer carta de resultado
+        if (!cartasResultado.isEmpty()) {
             return cartasResultado.get(random.nextInt(cartasResultado.size()));
         }
         
         return null;
     }
     
-        /**
+    /**
      * Verifica se duas cartas são de tipos diferentes (operação vs resultado).
      * @param idCarta1 ID da primeira carta
      * @param idCarta2 ID da segunda carta
@@ -256,33 +204,13 @@ public class AIPlayer extends Player {
         boolean ehOp2 = idCarta2.contains("op");
         return ehOp1 != ehOp2;
     }
-
-    /**
-     * Obtém informações de uma carta baseada no ID.
-     * Este método deve ser implementado para acessar as informações das cartas.
-     * @param idCarta ID da carta
-     * @return Informações da carta, ou null se não encontrada
-     */
-    private CardInfo obterInfoCartaPorId(String idCarta) {
-        // Por enquanto, retorna informações básicas baseadas no ID
-        // Em uma implementação completa, isso deveria acessar o GameController
-        if (idCarta.contains("op")) {
-            // Carta de operação
-            return new CardInfo("?", 0, true);
-        } else if (idCarta.contains("re")) {
-            // Carta de resultado
-            return new CardInfo("?", 0, false);
-        }
-        return null;
-    }
     
-        /**
+    /**
      * Limpa a memória da IA.
      */
     public void limparMemoria() {
         cardMemory.clear();
         revealedCards.clear();
-        System.out.println("Memória da IA foi limpa");
     }
 
     /**
@@ -290,9 +218,10 @@ public class AIPlayer extends Player {
      * @return String com estatísticas
      */
     public String obterEstatisticasMemoria() {
-        return String.format("IA %s - Cartas na memória: %d/%d", 
+        return String.format("IA %s - Cartas na memória: %d, Pares lembrados: %d/%d", 
                            difficulty.getDisplayName(), 
-                           revealedCards.size(), 
+                           revealedCards.size(),
+                           cardMemory.size(),
                            difficulty.getMemorySize());
     }
     
@@ -306,25 +235,25 @@ public class AIPlayer extends Player {
     }
     
     /**
-     * Classe interna para armazenar informações de memória de cartas.
+     * Classe interna para armazenar informações de um par de cartas.
      */
-    private static class CardMemory {
-        private final String cardId;
-        private final CardInfo cardInfo;
+    private static class CardPair {
+        private final String carta1;
+        private final String carta2;
         private final long timestamp;
         
-        public CardMemory(String cardId, CardInfo cardInfo) {
-            this.cardId = cardId;
-            this.cardInfo = cardInfo;
+        public CardPair(String carta1, String carta2) {
+            this.carta1 = carta1;
+            this.carta2 = carta2;
             this.timestamp = System.currentTimeMillis();
         }
         
-        public String getCardId() {
-            return cardId;
+        public String getCarta1() {
+            return carta1;
         }
         
-        public CardInfo getCardInfo() {
-            return cardInfo;
+        public String getCarta2() {
+            return carta2;
         }
         
         public long getTimestamp() {

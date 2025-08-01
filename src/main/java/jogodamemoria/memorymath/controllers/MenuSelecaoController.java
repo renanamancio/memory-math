@@ -36,4 +36,9 @@ public class MenuSelecaoController implements Initializable {
     private void voltarMenu() {
         SceneManager.getInstance().carregarCena("/fxml/menu-view.fxml");
     }
+    
+    @FXML
+    private void aoClicarInstrucoes() {
+        SceneManager.getInstance().carregarCena("/fxml/instrucoes-view.fxml");
+    }
 }
