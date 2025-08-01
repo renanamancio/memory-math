@@ -29,8 +29,8 @@ Um jogo educativo de memória que combina matemática com diversão! Encontre pa
 2. **Primeira Carta**: Clique em uma carta do grid de operações
 3. **Segunda Carta**: Clique em uma carta do grid de resultados
 4. **Pontuação**: 
-   - Acertar um par: +10 pontos
-   - Errar um par: -3 pontos
+   - Acertar um par: +5 pontos
+   - Errar um par: -1 ponto
 5. **Vitória**: Quem tiver mais pontos no final vence!
 
 ## 🛠️ Requisitos
