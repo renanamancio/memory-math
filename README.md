@@ -1,6 +1,17 @@
 # Memory Math - Jogo de Memória Matemática
 
+<<<<<<< HEAD
 Um jogo educativo de memória que combina matemática com diversão! Encontre pares de cartas que formem operações matemáticas válidas.
+=======
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.java.net/)
+[![JavaFX](https://img.shields.io/badge/JavaFX-21-blue.svg)](https://openjfx.io/)
+[![Maven](https://img.shields.io/badge/Maven-3.13.0-red.svg)](https://maven.apache.org/)
+[![License](https://img.shields.io/badge/Licenza-Commons_Clause%20%2B%20MIT-red)](LICENSE.md)
+
+<p align="center">
+  <img width="350" height="350" alt="logoJogo" src="https://github.com/user-attachments/assets/d813046b-c188-4113-b2ea-07871c8c2761" />
+</p>
+>>>>>>> 9a51e4ab1c22d5290e05f072656cb4e33dfdf64f
 
 ## 🎮 Características
 
@@ -92,12 +103,20 @@ memoryMath/
 
 ## 🎯 Funcionalidades Implementadas
 
+<<<<<<< HEAD
 ### ✅ Correções Realizadas
 - **Som de Derrota**: Corrigido para tocar quando a IA vence
 - **Sistema de Pontuação**: Implementado (+10/-3 pontos)
 - **Tela de Instruções**: Criada com regras completas
 - **Otimização Desktop**: Interface redimensionada para desktop
 - **Limpeza de Código**: Removidos métodos não utilizados
+=======
+1. **Clone o repositório**
+   ```bash
+   git clone https://github.com/renanamancio/memory-math
+   cd memory-Math
+   ```
+>>>>>>> 9a51e4ab1c22d5290e05f072656cb4e33dfdf64f
 
 ### 🆕 Novas Funcionalidades
 - **Responsividade**: Melhor adaptação para diferentes telas
@@ -164,6 +183,7 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE.md` para mais det
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
+<<<<<<< HEAD
 ## 📞 Suporte
 
 Para dúvidas ou sugestões, abra uma issue no repositório.
@@ -171,3 +191,36 @@ Para dúvidas ou sugestões, abra uma issue no repositório.
 ---
 
 **Desenvolvido com ❤️ pela equipe MemoryMath** 
+=======
+### Padrões de Código
+- Siga as convenções de nomenclatura Java
+- Adicione comentários Javadoc para métodos públicos
+- Mantenha a cobertura de testes acima de 80%
+- Use nomes descritivos para variáveis e métodos
+
+## 📝 Licença
+Este projeto permite colaboração aberta, mas proíbe redistribuição, sublicenciamento e uso comercial.  
+Leia o arquivo [LICENSE](LICENSE.md) para detalhes.
+
+## 👥 Autores
+
+- **Renan Henrique Batista Amancio** - *Desenvolvimento inicial* - [GitHub](https://github.com/renanamancio)
+
+## 🙏 Agradecimentos
+
+- JavaFX Community
+- Maven Community
+- Contribuidores e testadores do projeto
+
+## 📞 Suporte
+
+Se você encontrar algum problema ou tiver sugestões:
+
+1. Verifique se há uma [issue](https://github.com/renanamancio/memory-math/issues) relacionada
+2. Crie uma nova issue com detalhes do problema
+3. Para dúvidas gerais, abra uma [discussion](https://github.com/renanamancio/memory-math/discussions)
+
+---
+
+**Divirta-se jogando Memory Math! 🎮🧮** 
+>>>>>>> 9a51e4ab1c22d5290e05f072656cb4e33dfdf64f
