@@ -36,48 +36,53 @@ import java.util.Collections;
  * Controlador responsável pela tela principal do jogo.
  * Gerencia a interface do tabuleiro de cartas e a lógica de jogo.
  * 
- * @author MemoryMath Team
- * @version 2.0
+ * @author Renan Amancio
+ * @version 1.0
  */
 public class GameController {
 
-    private static final int NUM_COLS = 3;
-    private static final int NUM_ROWS = 4;
-    private static final int TOTAL_PAIRS = 12;
+    // Constantes do jogo
+    private static final int NUMERO_COLUNAS = 3;
+    private static final int NUMERO_LINHAS = 4;
+    private static final int TOTAL_PARES = 12; // 12 pares = 24 cartas individuais
 
-    private static final String CARD_BACK_IMAGE_PATH = "/images/verso-carta.png";
-    private static final String CARD_REVEL_IMAGE_SOMA = "/images/amareloEstimulo.jpg";
-    private static final String CARD_REVEL_IMAGE_SUBTRACAO = "/images/azulCerebro.png";
-    private static final String CARD_REVEL_IMAGE_MULTIPLICACAO = "/images/roxoDesafio.png";
-    private static final String CARD_REVEL_IMAGE_DIVISAO = "/images/verdeLogico.jpg";
+    // Caminhos das imagens das cartas
+    private static final String CAMINHO_IMAGEM_VERSO_CARTA = "/images/verso-carta.png";
+    private static final String CAMINHO_IMAGEM_REVELACAO_SOMA = "/images/amareloEstimulo.jpg";
+    private static final String CAMINHO_IMAGEM_REVELACAO_SUBTRACAO = "/images/azulCerebro.png";
+    private static final String CAMINHO_IMAGEM_REVELACAO_MULTIPLICACAO = "/images/roxoDesafio.png";
+    private static final String CAMINHO_IMAGEM_REVELACAO_DIVISAO = "/images/verdeLogico.jpg";
 
-    @FXML private GridPane operacoesGrid;
-    @FXML private GridPane resultadosGrid;
-    @FXML private Label turnIndicatorLabel;
-    @FXML private Label jogador1Nome;
-    @FXML private Label jogador1Score;
-    @FXML private Label jogador2Nome;
-    @FXML private Label jogador2Score;
+    // Elementos da interface
+    @FXML private GridPane gradeOperacoes;
+    @FXML private GridPane gradeResultados;
+    @FXML private Label rotuloIndicadorTurno;
+    @FXML private Label nomeJogador1;
+    @FXML private Label pontuacaoJogador1;
+    @FXML private Label nomeJogador2;
+    @FXML private Label pontuacaoJogador2;
 
-    private Image cardBackImage;
-    private Image cardRevelImageSoma;
-    private Image cardRevelImageSubtracao;
-    private Image cardRevelImageMultiplicacao;
-    private Image cardRevelImageDivisao;
+    // Imagens das cartas
+    private Image imagemVersoCarta;
+    private Image imagemRevelacaoSoma;
+    private Image imagemRevelacaoSubtracao;
+    private Image imagemRevelacaoMultiplicacao;
+    private Image imagemRevelacaoDivisao;
 
+    // Estado do jogo
     private Gerador gerador;
     private StackPane primeiraCartaSelecionada;
     private StackPane segundaCartaSelecionada;
     private boolean aguardandoSegundaCarta = false;
-    private int cartasEncontradas = 0;
-    private final int TOTAL_CARTAS = NUM_ROWS * NUM_COLS;
+    private int paresEncontrados = 0;
+    private final int TOTAL_CARTAS = NUMERO_LINHAS * NUMERO_COLUNAS * 2; // 24 cartas individuais (12 pares)
 
     private Integer[][] resultadosEmbaralhados;
 
     private boolean turnoIA = false;
-    private PauseTransition delayIA;
+    private PauseTransition atrasoIA;
     
-    // Constantes para o novo sistema de pontuação
+    // Constantes para o sistema de pontuação
     private static final int PONTOS_ACERTO = 5;
     private static final int PONTOS_ERRO = -1;
 
@@ -85,108 +90,99 @@ public class GameController {
      * Inicializa o controlador do jogo, carregando recursos e configurando o tabuleiro.
      */
     @FXML
-    public void initialize() {
-        // Garante que a contagem seja inicializada corretamente
-        cartasEncontradas = 0;
+    public void inicializar() {
+        paresEncontrados = 0;
         
-        loadAllCardImages();
-        setupGame();
-        setupResponsiveLayout();
-        populateGrids();
-        setupPlayerInfo();
-        updateTurnIndicator();
-        
-        System.out.println("Jogo inicializado! Total de cartas: " + TOTAL_CARTAS + " (12 pares)");
-        System.out.println("Contagem inicial de cartas encontradas: " + cartasEncontradas);
-        System.out.println("NUM_ROWS = " + NUM_ROWS + ", NUM_COLS = " + NUM_COLS);
-        System.out.println("TOTAL_CARTAS = " + TOTAL_CARTAS + " (deve ser 12)");
+        carregarTodasImagensCartas();
+        configurarJogo();
+        configurarLayoutResponsivo();
+        popularGrades();
+        configurarInformacoesJogadores();
+        atualizarIndicadorTurno();
     }
 
+    /**
+     * Encerra a partida e retorna ao menu principal.
+     */
     @FXML
-    private void encerraPartida() {
+    private void encerrarPartida() {
         SceneManager.getInstance().carregarCena("/fxml/menu-view.fxml");
     }
 
     /**
      * Configura o layout responsivo para diferentes tamanhos de tela.
      */
-    private void setupResponsiveLayout() {
-        operacoesGrid.setHgap(8);
-        operacoesGrid.setVgap(8);
-        resultadosGrid.setHgap(8);
-        resultadosGrid.setVgap(8);
+    private void configurarLayoutResponsivo() {
+        gradeOperacoes.setHgap(8);
+        gradeOperacoes.setVgap(8);
+        gradeResultados.setHgap(8);
+        gradeResultados.setVgap(8);
 
-        for (int i = 0; i < NUM_COLS; i++) {
-            ColumnConstraints colConstraints = new ColumnConstraints();
-            colConstraints.setPercentWidth(100.0 / NUM_COLS);
-            colConstraints.setHgrow(Priority.ALWAYS);
-            operacoesGrid.getColumnConstraints().add(colConstraints);
-            resultadosGrid.getColumnConstraints().add(colConstraints);
+        for (int i = 0; i < NUMERO_COLUNAS; i++) {
+            ColumnConstraints restricoesColuna = new ColumnConstraints();
+            restricoesColuna.setPercentWidth(100.0 / NUMERO_COLUNAS);
+            restricoesColuna.setHgrow(Priority.ALWAYS);
+            gradeOperacoes.getColumnConstraints().add(restricoesColuna);
+            gradeResultados.getColumnConstraints().add(restricoesColuna);
         }
         
-        for (int i = 0; i < NUM_ROWS; i++) {
-            RowConstraints rowConstraints = new RowConstraints();
-            rowConstraints.setPercentHeight(100.0 / NUM_ROWS);
-            rowConstraints.setVgrow(Priority.ALWAYS);
-            operacoesGrid.getRowConstraints().add(rowConstraints);
-            resultadosGrid.getRowConstraints().add(rowConstraints);
+        for (int i = 0; i < NUMERO_LINHAS; i++) {
+            RowConstraints restricoesLinha = new RowConstraints();
+            restricoesLinha.setPercentHeight(100.0 / NUMERO_LINHAS);
+            restricoesLinha.setVgrow(Priority.ALWAYS);
+            gradeOperacoes.getRowConstraints().add(restricoesLinha);
+            gradeResultados.getRowConstraints().add(restricoesLinha);
         }
     }
 
     /**
      * Configura o jogo inicializando o gerador e as operações.
      */
-    private void setupGame() {
-        GameManager gm = GameManager.getInstance();
-        List<Card.OperationType> operacoesSelecionadas = gm.getSelectedOperations();
-        int[] operacoesArray = new int[4];
+    private void configurarJogo() {
+        GameManager gerenciadorJogo = GameManager.getInstance();
+        List<Card.OperationType> operacoesSelecionadas = gerenciadorJogo.getSelectedOperations();
+        int[] arrayOperacoes = new int[4];
         
-        // Configura array de operações selecionadas
         for (Card.OperationType op : operacoesSelecionadas) {
             switch (op) {
                 case SOMA:
-                    operacoesArray[Gerador.SOMA] = 1;
+                    arrayOperacoes[Gerador.SOMA] = 1;
                     break;
                 case SUBTRACAO:
-                    operacoesArray[Gerador.SUBTRACAO] = 1;
+                    arrayOperacoes[Gerador.SUBTRACAO] = 1;
                     break;
                 case MULTIPLICACAO:
-                    operacoesArray[Gerador.MULTIPLICACAO] = 1;
+                    arrayOperacoes[Gerador.MULTIPLICACAO] = 1;
                     break;
                 case DIVISAO:
-                    operacoesArray[Gerador.DIVISAO] = 1;
+                    arrayOperacoes[Gerador.DIVISAO] = 1;
                     break;
             }
         }
 
-        gerador = new Gerador(NUM_ROWS, NUM_COLS, operacoesArray);
+        gerador = new Gerador(NUMERO_LINHAS, NUMERO_COLUNAS, arrayOperacoes);
         embaralharResultados();
-
-        System.out.println("=== CONFIGURAÇÃO DO JOGO ===");
-        System.out.println("Operações selecionadas: " + operacoesSelecionadas);
-        System.out.println("Grid: " + NUM_ROWS + "x" + NUM_COLS + " (" + TOTAL_PAIRS + " pares)");
-        System.out.println("=== FIM DA CONFIGURAÇÃO ===\n");
     }
 
     /**
      * Embaralha os resultados para criar posições aleatórias no grid de resultados.
      */
     private void embaralharResultados() {
-        resultadosEmbaralhados = new Integer[NUM_ROWS][NUM_COLS];
+        resultadosEmbaralhados = new Integer[NUMERO_LINHAS][NUMERO_COLUNAS];
 
         List<Integer> todosResultados = new ArrayList<>();
-        for (int i = 0; i < NUM_ROWS; i++) {
-            for (int j = 0; j < NUM_COLS; j++) {
+        for (int i = 0; i < NUMERO_LINHAS; i++) {
+            for (int j = 0; j < NUMERO_COLUNAS; j++) {
                 todosResultados.add(gerador.getMatrizResultados()[i][j]);
             }
         }
 
         Collections.shuffle(todosResultados);
 
-        int index = 0;
-        for (int i = 0; i < NUM_ROWS; i++) {
-            for (int j = 0; j < NUM_COLS; j++) {
-                resultadosEmbaralhados[i][j] = todosResultados.get(index++);
+        int indice = 0;
+        for (int i = 0; i < NUMERO_LINHAS; i++) {
+            for (int j = 0; j < NUMERO_COLUNAS; j++) {
+                resultadosEmbaralhados[i][j] = todosResultados.get(indice++);
             }
         }
     }
@@ -194,110 +190,104 @@ public class GameController {
     /**
      * Carrega todas as imagens das cartas (verso e faces coloridas).
      */
-    private void loadAllCardImages() {
-        loadCardBackImage();
-        loadCardRevelImages();
+    private void carregarTodasImagensCartas() {
+        carregarImagemVersoCarta();
+        carregarImagensRevelacao();
     }
 
     /**
      * Carrega a imagem do verso da carta com tratamento de erro.
      */
-    private void loadCardBackImage() {
+    private void carregarImagemVersoCarta() {
         try {
-            cardBackImage = ImageUtils.carregarImagem(CARD_BACK_IMAGE_PATH);
+            imagemVersoCarta = ImageUtils.carregarImagem(CAMINHO_IMAGEM_VERSO_CARTA);
 
-            if (cardBackImage.isError()) {
+            if (imagemVersoCarta.isError()) {
                 throw new RuntimeException("Erro ao carregar a imagem do verso da carta");
             }
-            
-            System.out.println("Imagem do verso da carta carregada com sucesso");
         } catch (ResourceLoadException e) {
             AlertUtils.mostrarErro("Erro ao carregar recursos do jogo", e.getMessage());
-            cardBackImage = null;
+            imagemVersoCarta = null;
         }
     }
 
     /**
      * Carrega as imagens de revelação das cartas (faces coloridas).
      */
-    private void loadCardRevelImages() {
+    private void carregarImagensRevelacao() {
         try {
-            cardRevelImageSoma = ImageUtils.carregarImagem(CARD_REVEL_IMAGE_SOMA);
-            if (cardRevelImageSoma.isError()) {
+            imagemRevelacaoSoma = ImageUtils.carregarImagem(CAMINHO_IMAGEM_REVELACAO_SOMA);
+            if (imagemRevelacaoSoma.isError()) {
                 throw new RuntimeException("Erro ao carregar imagem de soma");
             }
 
-            cardRevelImageSubtracao = ImageUtils.carregarImagem(CARD_REVEL_IMAGE_SUBTRACAO);
-            if (cardRevelImageSubtracao.isError()) {
+            imagemRevelacaoSubtracao = ImageUtils.carregarImagem(CAMINHO_IMAGEM_REVELACAO_SUBTRACAO);
+            if (imagemRevelacaoSubtracao.isError()) {
                 throw new RuntimeException("Erro ao carregar imagem de subtração");
             }
 
-            cardRevelImageMultiplicacao = ImageUtils.carregarImagem(CARD_REVEL_IMAGE_MULTIPLICACAO);
-            if (cardRevelImageMultiplicacao.isError()) {
+            imagemRevelacaoMultiplicacao = ImageUtils.carregarImagem(CAMINHO_IMAGEM_REVELACAO_MULTIPLICACAO);
+            if (imagemRevelacaoMultiplicacao.isError()) {
                 throw new RuntimeException("Erro ao carregar imagem de multiplicação");
             }
 
-            cardRevelImageDivisao = ImageUtils.carregarImagem(CARD_REVEL_IMAGE_DIVISAO);
-            if (cardRevelImageDivisao.isError()) {
+            imagemRevelacaoDivisao = ImageUtils.carregarImagem(CAMINHO_IMAGEM_REVELACAO_DIVISAO);
+            if (imagemRevelacaoDivisao.isError()) {
                 throw new RuntimeException("Erro ao carregar imagem de divisão");
             }
-            
-            System.out.println("Todas as imagens de revelação carregadas com sucesso");
         } catch (ResourceLoadException e) {
             AlertUtils.mostrarErro("Erro ao carregar recursos do jogo", e.getMessage());
-            cardRevelImageSoma = cardRevelImageSubtracao = cardRevelImageMultiplicacao = cardRevelImageDivisao = null;
+            imagemRevelacaoSoma = imagemRevelacaoSubtracao = imagemRevelacaoMultiplicacao = imagemRevelacaoDivisao = null;
         }
     }
 
     /**
      * Obtém a imagem de revelação baseada no tipo de operação.
-     * @param operationType tipo de operação matemática
+     * @param tipoOperacao tipo de operação matemática
      * @return Image correspondente à operação
      */
-    private Image getRevelImageForOperation(Card.OperationType operationType) {
-        switch (operationType) {
+    private Image obterImagemRevelacaoParaOperacao(Card.OperationType tipoOperacao) {
+        switch (tipoOperacao) {
             case SOMA:
-                return cardRevelImageSoma;
+                return imagemRevelacaoSoma;
             case SUBTRACAO:
-                return cardRevelImageSubtracao;
+                return imagemRevelacaoSubtracao;
             case MULTIPLICACAO:
-                return cardRevelImageMultiplicacao;
+                return imagemRevelacaoMultiplicacao;
             case DIVISAO:
-                return cardRevelImageDivisao;
+                return imagemRevelacaoDivisao;
             default:
-                return cardBackImage; // Fallback
+                return imagemVersoCarta; // Fallback
         }
     }
-
-
 
     /**
      * Popula os grids de operações e resultados.
      */
-    private void populateGrids() {
-        populateGrid(operacoesGrid, "op");
-        populateGrid(resultadosGrid, "re");
+    private void popularGrades() {
+        popularGrade(gradeOperacoes, "op");
+        popularGrade(gradeResultados, "re");
     }
 
     /**
      * Configura as informações dos jogadores na interface.
      */
-    private void setupPlayerInfo() {
-        GameManager gm = GameManager.getInstance();
-        jogador1Nome.setText(gm.getPlayer1().getName());
-        jogador1Score.setText(String.valueOf(gm.getPlayer1().getScore()));
-        jogador2Nome.setText(gm.getPlayer2().getName());
-        jogador2Score.setText(String.valueOf(gm.getPlayer2().getScore()));
+    private void configurarInformacoesJogadores() {
+        GameManager gerenciadorJogo = GameManager.getInstance();
+        nomeJogador1.setText(gerenciadorJogo.getPlayer1().getName());
+        pontuacaoJogador1.setText(String.valueOf(gerenciadorJogo.getPlayer1().getScore()));
+        nomeJogador2.setText(gerenciadorJogo.getPlayer2().getName());
+        pontuacaoJogador2.setText(String.valueOf(gerenciadorJogo.getPlayer2().getScore()));
     }
 
     /**
      * Atualiza o indicador de turno.
      */
-    private void updateTurnIndicator() {
-        GameManager gm = GameManager.getInstance();
-        turnIndicatorLabel.setText("Vez de: " + gm.getCurrentPlayer().getName());
+    private void atualizarIndicadorTurno() {
+        GameManager gerenciadorJogo = GameManager.getInstance();
+        rotuloIndicadorTurno.setText("Vez de: " + gerenciadorJogo.getCurrentPlayer().getName());
 
-        if (gm.getCurrentPlayer() instanceof AIPlayer) {
+        if (gerenciadorJogo.getCurrentPlayer() instanceof AIPlayer) {
             turnoIA = true;
             if (!aguardandoSegundaCarta) {
                 iniciarTurnoIA();
@@ -313,11 +303,11 @@ public class GameController {
     private void iniciarTurnoIA() {
         if (!turnoIA) return;
 
-        delayIA = new PauseTransition(Duration.seconds(1.0));
-        delayIA.setOnFinished(event -> {
+        atrasoIA = new PauseTransition(Duration.seconds(1.0));
+        atrasoIA.setOnFinished(event -> {
             executarJogadaIA();
         });
-        delayIA.play();
+        atrasoIA.play();
     }
 
     /**
@@ -326,35 +316,35 @@ public class GameController {
     private void executarJogadaIA() {
         if (!turnoIA) return;
         
-        GameManager gm = GameManager.getInstance();
-        AIPlayer aiPlayer = (AIPlayer) gm.getCurrentPlayer();
+        GameManager gerenciadorJogo = GameManager.getInstance();
+        AIPlayer jogadorIA = (AIPlayer) gerenciadorJogo.getCurrentPlayer();
 
-        List<String> availableCards = new ArrayList<>();
-        for (int i = 0; i < operacoesGrid.getChildren().size(); i++) {
-            StackPane card = (StackPane) operacoesGrid.getChildren().get(i);
-            if (!isCardRevealed(card) && !isCardMatched(card)) {
-                availableCards.add(card.getId());
+        List<String> cartasDisponiveis = new ArrayList<>();
+        for (int i = 0; i < gradeOperacoes.getChildren().size(); i++) {
+            StackPane carta = (StackPane) gradeOperacoes.getChildren().get(i);
+            if (!isCartaRevelada(carta) && !isCartaEncontrada(carta)) {
+                cartasDisponiveis.add(carta.getId());
             }
         }
         
-        if (availableCards.isEmpty()) {
+        if (cartasDisponiveis.isEmpty()) {
             return;
         }
 
-        String bestMove = aiPlayer.calcularMelhorJogada(availableCards);
+        String melhorJogada = jogadorIA.calcularMelhorJogada(cartasDisponiveis);
         
-        if (bestMove != null) {
-            StackPane cardToClick = findCardById(bestMove);
-            if (cardToClick != null) {
+        if (melhorJogada != null) {
+            StackPane cartaParaClicar = encontrarCartaPorId(melhorJogada);
+            if (cartaParaClicar != null) {
                 if (!aguardandoSegundaCarta) {
-                    primeiraCartaSelecionada = cardToClick;
-                    revealCard(cardToClick);
-                    registerCardForAI(cardToClick);
+                    primeiraCartaSelecionada = cartaParaClicar;
+                    revelarCarta(cartaParaClicar);
+                    registrarCartaParaIA(cartaParaClicar);
                     aguardandoSegundaCarta = true;
 
-                    PauseTransition secondCardDelay = new PauseTransition(Duration.seconds(1.0));
-                    secondCardDelay.setOnFinished(event -> executarSegundaJogadaIA());
-                    secondCardDelay.play();
+                    PauseTransition atrasoSegundaCarta = new PauseTransition(Duration.seconds(1.0));
+                    atrasoSegundaCarta.setOnFinished(event -> executarSegundaJogadaIA());
+                    atrasoSegundaCarta.play();
                 }
             }
         }
@@ -366,56 +356,54 @@ public class GameController {
     private void executarSegundaJogadaIA() {
         if (!turnoIA || !aguardandoSegundaCarta) return;
         
-        GameManager gm = GameManager.getInstance();
-        AIPlayer aiPlayer = (AIPlayer) gm.getCurrentPlayer();
+        GameManager gerenciadorJogo = GameManager.getInstance();
+        AIPlayer jogadorIA = (AIPlayer) gerenciadorJogo.getCurrentPlayer();
 
-        List<String> availableCards = new ArrayList<>();
-        for (int i = 0; i < resultadosGrid.getChildren().size(); i++) {
-            StackPane card = (StackPane) resultadosGrid.getChildren().get(i);
-            if (!isCardRevealed(card) && !isCardMatched(card) && (primeiraCartaSelecionada == null || !card.getId().equals(primeiraCartaSelecionada.getId()))) {
-                availableCards.add(card.getId());
+        List<String> cartasDisponiveis = new ArrayList<>();
+        for (int i = 0; i < gradeResultados.getChildren().size(); i++) {
+            StackPane carta = (StackPane) gradeResultados.getChildren().get(i);
+            if (!isCartaRevelada(carta) && !isCartaEncontrada(carta) && (primeiraCartaSelecionada == null || !carta.getId().equals(primeiraCartaSelecionada.getId()))) {
+                cartasDisponiveis.add(carta.getId());
             }
         }
         
-        if (availableCards.isEmpty()) {
+        if (cartasDisponiveis.isEmpty()) {
             return;
         }
 
-        String bestMove = aiPlayer.calcularMelhorJogada(availableCards);
+        String melhorJogada = jogadorIA.calcularMelhorJogada(cartasDisponiveis);
         
-        if (bestMove != null) {
-            StackPane cardToClick = findCardById(bestMove);
-            if (cardToClick != null) {
-                segundaCartaSelecionada = cardToClick;
-                revealCard(cardToClick);
-                registerCardForAI(cardToClick);
+        if (melhorJogada != null) {
+            StackPane cartaParaClicar = encontrarCartaPorId(melhorJogada);
+            if (cartaParaClicar != null) {
+                segundaCartaSelecionada = cartaParaClicar;
+                revelarCarta(cartaParaClicar);
+                registrarCartaParaIA(cartaParaClicar);
 
-                PauseTransition checkDelay = new PauseTransition(Duration.seconds(0.5));
-                checkDelay.setOnFinished(event -> checkMatch());
-                checkDelay.play();
+                PauseTransition atrasoVerificacao = new PauseTransition(Duration.seconds(0.5));
+                atrasoVerificacao.setOnFinished(event -> verificarPar());
+                atrasoVerificacao.play();
             }
         }
     }
 
-
-
     /**
      * Encontra uma carta pelo ID.
-     * @param cardId ID da carta
+     * @param idCarta ID da carta
      * @return StackPane da carta, ou null se não encontrada
      */
-    private StackPane findCardById(String cardId) {
-        for (int i = 0; i < operacoesGrid.getChildren().size(); i++) {
-            StackPane card = (StackPane) operacoesGrid.getChildren().get(i);
-            if (card.getId().equals(cardId)) {
-                return card;
+    private StackPane encontrarCartaPorId(String idCarta) {
+        for (int i = 0; i < gradeOperacoes.getChildren().size(); i++) {
+            StackPane carta = (StackPane) gradeOperacoes.getChildren().get(i);
+            if (carta.getId().equals(idCarta)) {
+                return carta;
             }
         }
 
-        for (int i = 0; i < resultadosGrid.getChildren().size(); i++) {
-            StackPane card = (StackPane) resultadosGrid.getChildren().get(i);
-            if (card.getId().equals(cardId)) {
-                return card;
+        for (int i = 0; i < gradeResultados.getChildren().size(); i++) {
+            StackPane carta = (StackPane) gradeResultados.getChildren().get(i);
+            if (carta.getId().equals(idCarta)) {
+                return carta;
             }
         }
         
@@ -424,210 +412,207 @@ public class GameController {
 
     /**
      * Registra carta revelada na memória da IA.
-     * @param card Carta revelada
+     * @param carta Carta revelada
      */
-    private void registerCardForAI(StackPane card) {
-        GameManager gm = GameManager.getInstance();
-        // Registra a carta para todas as IAs no jogo (se houver)
-        if (gm.getPlayer1() instanceof AIPlayer) {
-            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer1();
-            CardInfo cardInfo = getCardInfo(card);
+    private void registrarCartaParaIA(StackPane carta) {
+        GameManager gerenciadorJogo = GameManager.getInstance();
+        if (gerenciadorJogo.getPlayer1() instanceof AIPlayer) {
+            AIPlayer jogadorIA = (AIPlayer) gerenciadorJogo.getPlayer1();
+            InformacoesCarta informacoesCarta = obterInformacoesCarta(carta);
 
-            AIPlayer.CardInfo aiCardInfo = new AIPlayer.CardInfo(
-                cardInfo.displayText, 
-                cardInfo.result, 
-                cardInfo.isOperation
+            AIPlayer.CardInfo informacoesCartaIA = new AIPlayer.CardInfo(
+                informacoesCarta.textoExibicao, 
+                informacoesCarta.resultado, 
+                informacoesCarta.isOperacao
             );
             
-            aiPlayer.registrarCartaRevelada(card.getId(), aiCardInfo);
+            jogadorIA.registrarCartaRevelada(carta.getId(), informacoesCartaIA);
         }
         
-        if (gm.getPlayer2() instanceof AIPlayer) {
-            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer2();
-            CardInfo cardInfo = getCardInfo(card);
+        if (gerenciadorJogo.getPlayer2() instanceof AIPlayer) {
+            AIPlayer jogadorIA = (AIPlayer) gerenciadorJogo.getPlayer2();
+            InformacoesCarta informacoesCarta = obterInformacoesCarta(carta);
 
-            AIPlayer.CardInfo aiCardInfo = new AIPlayer.CardInfo(
-                cardInfo.displayText, 
-                cardInfo.result, 
-                cardInfo.isOperation
+            AIPlayer.CardInfo informacoesCartaIA = new AIPlayer.CardInfo(
+                informacoesCarta.textoExibicao, 
+                informacoesCarta.resultado, 
+                informacoesCarta.isOperacao
             );
             
-            aiPlayer.registrarCartaRevelada(card.getId(), aiCardInfo);
+            jogadorIA.registrarCartaRevelada(carta.getId(), informacoesCartaIA);
         }
     }
 
     /**
      * Remove carta da memória da IA quando encontrada.
-     * @param card Carta encontrada
+     * @param carta Carta encontrada
      */
-    private void removeCardFromAI(StackPane card) {
-        GameManager gm = GameManager.getInstance();
-        // Remove a carta de todas as IAs no jogo (se houver)
-        if (gm.getPlayer1() instanceof AIPlayer) {
-            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer1();
-            aiPlayer.removerCartaDaMemoria(card.getId());
+    private void removerCartaDaIA(StackPane carta) {
+        GameManager gerenciadorJogo = GameManager.getInstance();
+        if (gerenciadorJogo.getPlayer1() instanceof AIPlayer) {
+            AIPlayer jogadorIA = (AIPlayer) gerenciadorJogo.getPlayer1();
+            jogadorIA.removerCartaDaMemoria(carta.getId());
         }
         
-        if (gm.getPlayer2() instanceof AIPlayer) {
-            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer2();
-            aiPlayer.removerCartaDaMemoria(card.getId());
+        if (gerenciadorJogo.getPlayer2() instanceof AIPlayer) {
+            AIPlayer jogadorIA = (AIPlayer) gerenciadorJogo.getPlayer2();
+            jogadorIA.removerCartaDaMemoria(carta.getId());
         }
     }
     
     /**
      * Registra um par de cartas abertas na memória das IAs.
-     * @param card1 Primeira carta do par
-     * @param card2 Segunda carta do par
+     * @param carta1 Primeira carta do par
+     * @param carta2 Segunda carta do par
      */
-    private void registerPairForAI(StackPane card1, StackPane card2) {
-        GameManager gm = GameManager.getInstance();
-        // Registra o par para todas as IAs no jogo (se houver)
-        if (gm.getPlayer1() instanceof AIPlayer) {
-            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer1();
-            aiPlayer.registrarParAberto(card1.getId(), card2.getId());
+    private void registrarParParaIA(StackPane carta1, StackPane carta2) {
+        GameManager gerenciadorJogo = GameManager.getInstance();
+        if (gerenciadorJogo.getPlayer1() instanceof AIPlayer) {
+            AIPlayer jogadorIA = (AIPlayer) gerenciadorJogo.getPlayer1();
+            jogadorIA.registrarParAberto(carta1.getId(), carta2.getId());
         }
         
-        if (gm.getPlayer2() instanceof AIPlayer) {
-            AIPlayer aiPlayer = (AIPlayer) gm.getPlayer2();
-            aiPlayer.registrarParAberto(card1.getId(), card2.getId());
+        if (gerenciadorJogo.getPlayer2() instanceof AIPlayer) {
+            AIPlayer jogadorIA = (AIPlayer) gerenciadorJogo.getPlayer2();
+            jogadorIA.registrarParAberto(carta1.getId(), carta2.getId());
         }
     }
 
     /**
      * Popula um grid com cartas.
-     * @param grid GridPane a ser populado
-     * @param prefix Prefixo para identificação das cartas
+     * @param grade GridPane a ser populado
+     * @param prefixo Prefixo para identificação das cartas
      */
-    private void populateGrid(GridPane grid, String prefix) {
-        if (grid == null) {
-            System.err.println("Grid é null para prefixo: " + prefix);
+    private void popularGrade(GridPane grade, String prefixo) {
+        if (grade == null) {
+            System.err.println("Grid é null para prefixo: " + prefixo);
             return;
         }
         
-        for (int row = 0; row < NUM_ROWS; row++) {
-            for (int col = 0; col < NUM_COLS; col++) {
-                StackPane cardPane = createCardPane(prefix, row, col);
-                grid.add(cardPane, col, row);
+        for (int linha = 0; linha < NUMERO_LINHAS; linha++) {
+            for (int coluna = 0; coluna < NUMERO_COLUNAS; coluna++) {
+                StackPane painelCarta = criarPainelCarta(prefixo, linha, coluna);
+                grade.add(painelCarta, coluna, linha);
             }
         }
     }
 
     /**
      * Cria um painel de carta individual.
-     * @param prefix Prefixo da carta
-     * @param row Linha da carta
-     * @param col Coluna da carta
+     * @param prefixo Prefixo da carta
+     * @param linha Linha da carta
+     * @param coluna Coluna da carta
      * @return StackPane representando a carta
      */
-    private StackPane createCardPane(String prefix, int row, int col) {
-        ImageView cardBack = new ImageView(cardBackImage);
-        cardBack.setFitWidth(90);
-        cardBack.setFitHeight(90);
-        cardBack.setPreserveRatio(false);
-        cardBack.setSmooth(true);
-        cardBack.setCache(true);
+    private StackPane criarPainelCarta(String prefixo, int linha, int coluna) {
+        ImageView versoCarta = new ImageView(imagemVersoCarta);
+        versoCarta.setFitWidth(90);
+        versoCarta.setFitHeight(90);
+        versoCarta.setPreserveRatio(false);
+        versoCarta.setSmooth(true);
+        versoCarta.setCache(true);
 
-        ImageView cardFront = new ImageView();
-        cardFront.setFitWidth(90);
-        cardFront.setFitHeight(90);
-        cardFront.setPreserveRatio(false);
-        cardFront.setVisible(false);
+        ImageView frenteCarta = new ImageView();
+        frenteCarta.setFitWidth(90);
+        frenteCarta.setFitHeight(90);
+        frenteCarta.setPreserveRatio(false);
+        frenteCarta.setVisible(false);
 
-        Label cardLabel = new Label("?");
-        cardLabel.setVisible(false);
-        cardLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white; " +
+        Label rotuloCarta = new Label("?");
+        rotuloCarta.setVisible(false);
+        rotuloCarta.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white; " +
                           "-fx-padding: 10px; -fx-alignment: center;");
 
-        StackPane cardPane = new StackPane(cardBack, cardFront, cardLabel);
-        cardPane.setId("card-" + prefix + "-" + row + "-" + col);
-        cardPane.getStyleClass().add("card");
-        cardPane.setStyle("-fx-border-color: black; -fx-border-width: 2; -fx-background-radius: 5; -fx-border-radius: 5;");
+        StackPane painelCarta = new StackPane(versoCarta, frenteCarta, rotuloCarta);
+        painelCarta.setId("carta-" + prefixo + "-" + linha + "-" + coluna);
+        painelCarta.getStyleClass().add("carta");
+        painelCarta.setStyle("-fx-border-color: black; -fx-border-width: 2; -fx-background-radius: 5; -fx-border-radius: 5;");
 
-        cardPane.setOnMouseClicked(event -> handleCardClick(cardPane));
+        painelCarta.setOnMouseClicked(event -> manipularCliqueCarta(painelCarta));
         
-        return cardPane;
+        return painelCarta;
     }
 
     /**
      * Manipula o clique em uma carta.
-     * @param clickedCard Carta que foi clicada
+     * @param cartaClicada Carta que foi clicada
      */
-    private void handleCardClick(StackPane clickedCard) {
+    private void manipularCliqueCarta(StackPane cartaClicada) {
         if (turnoIA) {
             return;
         }
         
-        if (clickedCard == null || isCardRevealed(clickedCard) || isCardMatched(clickedCard)) {
+        if (cartaClicada == null || isCartaRevelada(cartaClicada) || isCartaEncontrada(cartaClicada)) {
             return;
         }
 
-        registerCardForAI(clickedCard);
+        registrarCartaParaIA(cartaClicada);
 
         if (!aguardandoSegundaCarta) {
-            if (!isOperationCard(clickedCard)) {
+            if (!isCartaOperacao(cartaClicada)) {
                 AlertUtils.mostrarErro("Jogada inválida", "A primeira carta deve ser do grid de operações.");
                 return;
             }
-            primeiraCartaSelecionada = clickedCard;
-            revealCard(clickedCard);
+            primeiraCartaSelecionada = cartaClicada;
+            revelarCarta(cartaClicada);
             aguardandoSegundaCarta = true;
         } else {
-            if (!isResultCard(clickedCard)) {
+            if (!isCartaResultado(cartaClicada)) {
                 AlertUtils.mostrarErro("Jogada inválida", "A segunda carta deve ser do grid de resultados.");
                 return;
             }
-            if (clickedCard != primeiraCartaSelecionada) {
-                segundaCartaSelecionada = clickedCard;
-                revealCard(clickedCard);
-                registerCardForAI(clickedCard);
-                checkMatch();
+            if (cartaClicada != primeiraCartaSelecionada) {
+                segundaCartaSelecionada = cartaClicada;
+                revelarCarta(cartaClicada);
+                registrarCartaParaIA(cartaClicada);
+                verificarPar();
             }
         }
     }
 
     /**
      * Verifica se uma carta está revelada.
-     * @param card Carta a ser verificada
+     * @param carta Carta a ser verificada
      * @return true se a carta está revelada
      */
-    private boolean isCardRevealed(StackPane card) {
-        if (card.getChildren().size() >= 2) {
-            return !card.getChildren().get(0).isVisible();
+    private boolean isCartaRevelada(StackPane carta) {
+        if (carta.getChildren().size() >= 2) {
+            return !carta.getChildren().get(0).isVisible();
         }
         return false;
     }
 
     /**
      * Verifica se uma carta já foi encontrada (matched).
-     * @param card Carta a ser verificada
+     * @param carta Carta a ser verificada
      * @return true se a carta foi encontrada
      */
-    private boolean isCardMatched(StackPane card) {
-        return card.getStyleClass().contains("matched");
+    private boolean isCartaEncontrada(StackPane carta) {
+        return carta.getStyleClass().contains("matched");
     }
 
     /**
      * Revela o conteúdo de uma carta.
-     * @param card Carta a ser revelada
+     * @param carta Carta a ser revelada
      */
-    private void revealCard(StackPane card) {
-        if (card.getChildren().size() >= 3) {
-            card.getChildren().get(0).setVisible(false);
+    private void revelarCarta(StackPane carta) {
+        if (carta.getChildren().size() >= 3) {
+            carta.getChildren().get(0).setVisible(false);
 
-            ImageView cardFront = (ImageView) card.getChildren().get(1);
-            cardFront.setVisible(true);
+            ImageView frenteCarta = (ImageView) carta.getChildren().get(1);
+            frenteCarta.setVisible(true);
 
-            CardInfo cardInfo = getCardInfo(card);
+            InformacoesCarta informacoesCarta = obterInformacoesCarta(carta);
 
-            if (cardInfo.operationType != null) {
-                cardFront.setImage(getRevelImageForOperation(cardInfo.operationType));
+            if (informacoesCarta.tipoOperacao != null) {
+                frenteCarta.setImage(obterImagemRevelacaoParaOperacao(informacoesCarta.tipoOperacao));
             } else {
-                cardFront.setImage(cardRevelImageSoma);
+                frenteCarta.setImage(imagemRevelacaoSoma);
             }
 
-            Label cardLabel = (Label) card.getChildren().get(2);
-            cardLabel.setText(cardInfo.displayText);
-            cardLabel.setVisible(true);
+            Label rotuloCarta = (Label) carta.getChildren().get(2);
+            rotuloCarta.setText(informacoesCarta.textoExibicao);
+            rotuloCarta.setVisible(true);
 
             AudioManager.getInstance().tocarSomRevelarCarta();
         }
@@ -636,254 +621,199 @@ public class GameController {
     /**
      * Verifica se as duas cartas selecionadas formam um par.
      */
-    private void checkMatch() {
-        CardInfo info1 = getCardInfo(primeiraCartaSelecionada);
-        CardInfo info2 = getCardInfo(segundaCartaSelecionada);
+    private void verificarPar() {
+        InformacoesCarta informacoes1 = obterInformacoesCarta(primeiraCartaSelecionada);
+        InformacoesCarta informacoes2 = obterInformacoesCarta(segundaCartaSelecionada);
         
-        boolean isMatch = false;
+        boolean isPar = false;
 
-        if (isOperationCard(primeiraCartaSelecionada) && isResultCard(segundaCartaSelecionada)) {
-            isMatch = info1.result == info2.result;
-            System.out.println("Verificando match: " + info1.displayText + " (" + info1.result + ") == " + info2.displayText + " (" + info2.result + ") = " + isMatch);
-        } else if (isResultCard(primeiraCartaSelecionada) && isOperationCard(segundaCartaSelecionada)) {
-            isMatch = info2.result == info1.result;
-            System.out.println("Verificando match: " + info2.displayText + " (" + info2.result + ") == " + info1.displayText + " (" + info1.result + ") = " + isMatch);
+        if (isCartaOperacao(primeiraCartaSelecionada) && isCartaResultado(segundaCartaSelecionada)) {
+            isPar = informacoes1.resultado == informacoes2.resultado;
+            System.out.println("Verificando par: " + informacoes1.textoExibicao + " (" + informacoes1.resultado + ") == " + informacoes2.textoExibicao + " (" + informacoes2.resultado + ") = " + isPar);
+        } else if (isCartaResultado(primeiraCartaSelecionada) && isCartaOperacao(segundaCartaSelecionada)) {
+            isPar = informacoes2.resultado == informacoes1.resultado;
+            System.out.println("Verificando par: " + informacoes2.textoExibicao + " (" + informacoes2.resultado + ") == " + informacoes1.textoExibicao + " (" + informacoes1.resultado + ") = " + isPar);
         }
         
-        if (isMatch) {
-            System.out.println("MATCH ENCONTRADO!");
-            handleMatch();
+        if (isPar) {
+            System.out.println("PAR ENCONTRADO!");
+            manipularParEncontrado();
         } else {
-            System.out.println("NÃO É MATCH!");
-            handleNoMatch();
+            System.out.println("NÃO É PAR!");
+            manipularParNaoEncontrado();
         }
     }
 
     /**
      * Manipula quando um par é encontrado.
      */
-    private void handleMatch() {
-        System.out.println("=== HANDLE MATCH INICIADO ===");
-        System.out.println("Antes: cartasEncontradas = " + cartasEncontradas);
-        
+    private void manipularParEncontrado() {
         primeiraCartaSelecionada.getStyleClass().removeAll("erro-match");
         segundaCartaSelecionada.getStyleClass().removeAll("erro-match");
         primeiraCartaSelecionada.getStyleClass().add("matched");
         segundaCartaSelecionada.getStyleClass().add("matched");
 
-        removeCardFromAI(primeiraCartaSelecionada);
-        removeCardFromAI(segundaCartaSelecionada);
+        removerCartaDaIA(primeiraCartaSelecionada);
+        removerCartaDaIA(segundaCartaSelecionada);
 
-        cartasEncontradas += 2;
-        System.out.println("Depois: cartasEncontradas = " + cartasEncontradas);
+        paresEncontrados++;
 
-        GameManager gm = GameManager.getInstance();
-        Player player = gm.getCurrentPlayer();
-        player.adicionarPontos(PONTOS_ACERTO);
+        GameManager gerenciadorJogo = GameManager.getInstance();
+        Player jogador = gerenciadorJogo.getCurrentPlayer();
+        jogador.adicionarPontos(PONTOS_ACERTO);
 
-        updatePlayerScores();
+        atualizarPontuacoesJogadores();
 
         AudioManager.getInstance().tocarSomMatch();
 
-        System.out.println("Par encontrado! Cartas encontradas: " + cartasEncontradas + "/" + TOTAL_CARTAS);
-        System.out.println("Condição para terminar: " + cartasEncontradas + " >= " + TOTAL_CARTAS + " = " + (cartasEncontradas >= TOTAL_CARTAS));
-
-        // SÓ TERMINA O JOGO SE TODAS AS 12 CARTAS FOREM ENCONTRADAS
-        if (cartasEncontradas >= TOTAL_CARTAS) {
-            System.out.println("TODAS AS 12 CARTAS FORAM ENCONTRADAS! Finalizando jogo...");
-            handleGameEnd();
+        if (paresEncontrados >= TOTAL_PARES) {
+            manipularFimJogo();
         } else {
-            System.out.println("Jogo continua... Próximo turno.");
-            resetCardSelection();
+            resetarSelecaoCartas();
 
-            if (gm.getCurrentPlayer() instanceof AIPlayer) {
-                PauseTransition aiDelay = new PauseTransition(Duration.seconds(0.5));
-                aiDelay.setOnFinished(event -> iniciarTurnoIA());
-                aiDelay.play();
+            if (gerenciadorJogo.getCurrentPlayer() instanceof AIPlayer) {
+                PauseTransition atrasoIA = new PauseTransition(Duration.seconds(0.5));
+                atrasoIA.setOnFinished(event -> iniciarTurnoIA());
+                atrasoIA.play();
             }
         }
-        System.out.println("=== HANDLE MATCH FINALIZADO ===");
     }
 
     /**
      * Manipula quando um par não é encontrado.
      */
-    private void handleNoMatch() {
+    private void manipularParNaoEncontrado() {
         AudioManager.getInstance().tocarSomNaoMatch();
         
-        // Registra o par aberto na memória das IAs
-        registerPairForAI(primeiraCartaSelecionada, segundaCartaSelecionada);
+        registrarParParaIA(primeiraCartaSelecionada, segundaCartaSelecionada);
         
-        // Aplica penalidade ao jogador atual
-        GameManager gm = GameManager.getInstance();
-        Player player = gm.getCurrentPlayer();
-        player.adicionarPontos(PONTOS_ERRO);
-        updatePlayerScores();
+        GameManager gerenciadorJogo = GameManager.getInstance();
+        Player jogador = gerenciadorJogo.getCurrentPlayer();
+        jogador.adicionarPontos(PONTOS_ERRO);
+        atualizarPontuacoesJogadores();
         
         primeiraCartaSelecionada.getStyleClass().removeAll("matched");
         segundaCartaSelecionada.getStyleClass().removeAll("matched");
         primeiraCartaSelecionada.getStyleClass().add("erro-match");
         segundaCartaSelecionada.getStyleClass().add("erro-match");
-        PauseTransition delay = new PauseTransition(Duration.seconds(1.5));
-        delay.setOnFinished(event -> {
-            hideCard(primeiraCartaSelecionada);
-            hideCard(segundaCartaSelecionada);
-            resetCardSelection();
-            gm.trocarTurno();
-            updateTurnIndicator();
+        PauseTransition atraso = new PauseTransition(Duration.seconds(1.5));
+        atraso.setOnFinished(event -> {
+            esconderCarta(primeiraCartaSelecionada);
+            esconderCarta(segundaCartaSelecionada);
+            resetarSelecaoCartas();
+            gerenciadorJogo.trocarTurno();
+            atualizarIndicadorTurno();
         });
-        delay.play();
+        atraso.play();
     }
 
     /**
      * Reseta a seleção de cartas.
      */
-    private void resetCardSelection() {
+    private void resetarSelecaoCartas() {
         primeiraCartaSelecionada = null;
         segundaCartaSelecionada = null;
         aguardandoSegundaCarta = false;
     }
 
     /**
-     * Verifica se todas as cartas foram encontradas.
-     * @return true se todas as cartas foram encontradas
-     */
-    private boolean verificarTodasCartasEncontradas() {
-        int cartasMatched = 0;
-        int cartasOperacoes = 0;
-        int cartasResultados = 0;
-        
-        // Conta cartas matched no grid de operações
-        for (int i = 0; i < operacoesGrid.getChildren().size(); i++) {
-            StackPane card = (StackPane) operacoesGrid.getChildren().get(i);
-            if (isCardMatched(card)) {
-                cartasMatched++;
-                cartasOperacoes++;
-            }
-        }
-        
-        // Conta cartas matched no grid de resultados
-        for (int i = 0; i < resultadosGrid.getChildren().size(); i++) {
-            StackPane card = (StackPane) resultadosGrid.getChildren().get(i);
-            if (isCardMatched(card)) {
-                cartasMatched++;
-                cartasResultados++;
-            }
-        }
-        
-        System.out.println("=== VERIFICAÇÃO DE CARTAS ===");
-        System.out.println("Cartas matched (operações): " + cartasOperacoes);
-        System.out.println("Cartas matched (resultados): " + cartasResultados);
-        System.out.println("Total matched: " + cartasMatched + "/" + TOTAL_CARTAS);
-        System.out.println("Variável cartasEncontradas: " + cartasEncontradas);
-        System.out.println("================================");
-        
-        return cartasMatched >= TOTAL_CARTAS;
-    }
-
-    /**
      * Manipula o fim do jogo.
      */
-    private void handleGameEnd() {
-        System.out.println("FINALIZANDO JOGO - Cartas encontradas: " + cartasEncontradas + "/" + TOTAL_CARTAS);
-        
-        GameManager gm = GameManager.getInstance();
+    private void manipularFimJogo() {
+        GameManager gerenciadorJogo = GameManager.getInstance();
         Player vencedor = null;
         boolean empate = false;
         
-        // Determina o vencedor baseado na pontuação
-        if (gm.getPlayer1().getScore() == gm.getPlayer2().getScore()) {
+        if (gerenciadorJogo.getPlayer1().getScore() == gerenciadorJogo.getPlayer2().getScore()) {
             empate = true;
         } else {
-            vencedor = gm.getPlayer1().getScore() > gm.getPlayer2().getScore() ? gm.getPlayer1() : gm.getPlayer2();
+            vencedor = gerenciadorJogo.getPlayer1().getScore() > gerenciadorJogo.getPlayer2().getScore() ? gerenciadorJogo.getPlayer1() : gerenciadorJogo.getPlayer2();
         }
-        gm.setVencedor(empate ? null : vencedor);
+        gerenciadorJogo.setVencedor(empate ? null : vencedor);
         
-        // Toca som apropriado baseado no resultado
         if (empate) {
-            AudioManager.getInstance().tocarSomVitoria(); // Som neutro para empate
-        } else if (gm.getGameMode() == GameManager.GameMode.PVE) {
+            AudioManager.getInstance().tocarSomVitoria();
+        } else if (gerenciadorJogo.getGameMode() == GameManager.GameMode.PVE) {
             if (vencedor instanceof AIPlayer) {
-                AudioManager.getInstance().tocarSomDerrota(); // Som de derrota quando IA vence
+                AudioManager.getInstance().tocarSomDerrota();
             } else {
-                AudioManager.getInstance().tocarSomVitoria(); // Som de vitória quando jogador vence
+                AudioManager.getInstance().tocarSomVitoria();
             }
         } else {
-            AudioManager.getInstance().tocarSomVitoria(); // Som de vitória para PvP
+            AudioManager.getInstance().tocarSomVitoria();
         }
         
-        System.out.println("JOGO FINALIZADO COM SUCESSO! Todas as " + TOTAL_CARTAS + " cartas foram encontradas.");
         jogodamemoria.memorymath.transitions.SceneManager.getInstance().carregarCena("/fxml/vitoria-view.fxml");
     }
 
     /**
      * Atualiza os scores dos jogadores na interface.
      */
-    private void updatePlayerScores() {
-        GameManager gm = GameManager.getInstance();
-        jogador1Score.setText(String.valueOf(gm.getPlayer1().getScore()));
-        jogador2Score.setText(String.valueOf(gm.getPlayer2().getScore()));
+    private void atualizarPontuacoesJogadores() {
+        GameManager gerenciadorJogo = GameManager.getInstance();
+        pontuacaoJogador1.setText(String.valueOf(gerenciadorJogo.getPlayer1().getScore()));
+        pontuacaoJogador2.setText(String.valueOf(gerenciadorJogo.getPlayer2().getScore()));
     }
 
     /**
      * Verifica se uma carta é de operação.
-     * @param card Carta a ser verificada
+     * @param carta Carta a ser verificada
      * @return true se é carta de operação
      */
-    private boolean isOperationCard(StackPane card) {
-        return card.getId().contains("op");
+    private boolean isCartaOperacao(StackPane carta) {
+        return carta.getId().contains("op");
     }
 
     /**
      * Verifica se uma carta é de resultado.
-     * @param card Carta a ser verificada
+     * @param carta Carta a ser verificada
      * @return true se é carta de resultado
      */
-    private boolean isResultCard(StackPane card) {
-        return card.getId().contains("re");
+    private boolean isCartaResultado(StackPane carta) {
+        return carta.getId().contains("re");
     }
 
     /**
      * Obtém as informações de uma carta baseada em sua posição.
-     * @param card Carta para obter informações
-     * @return CardInfo com as informações da carta
+     * @param carta Carta para obter informações
+     * @return InformacoesCarta com as informações da carta
      */
-    private CardInfo getCardInfo(StackPane card) {
-        String cardId = card.getId();
-        String[] parts = cardId.split("-");
-        int row = Integer.parseInt(parts[2]);
-        int col = Integer.parseInt(parts[3]);
+    private InformacoesCarta obterInformacoesCarta(StackPane carta) {
+        String idCarta = carta.getId();
+        String[] partes = idCarta.split("-");
+        int linha = Integer.parseInt(partes[2]);
+        int coluna = Integer.parseInt(partes[3]);
         
-        if (isOperationCard(card)) {
-            int op1 = gerador.getMatrizOperandos1()[row][col];
-            int op2 = gerador.getMatrizOperandos2()[row][col];
-            int result = gerador.getMatrizResultados()[row][col];
-            Card.OperationType operationType = getOperationType(row, col);
+        if (isCartaOperacao(carta)) {
+            int operando1 = gerador.getMatrizOperandos1()[linha][coluna];
+            int operando2 = gerador.getMatrizOperandos2()[linha][coluna];
+            int resultado = gerador.getMatrizResultados()[linha][coluna];
+            Card.OperationType tipoOperacao = obterTipoOperacao(linha, coluna);
             
-            String displayText = op1 + getOperationSymbol(operationType) + op2;
-            return new CardInfo(displayText, result, operationType, true);
+            String textoExibicao = operando1 + obterSimboloOperacao(tipoOperacao) + operando2;
+            return new InformacoesCarta(textoExibicao, resultado, tipoOperacao, true);
         } else {
-            int result = resultadosEmbaralhados[row][col];
-            Card.OperationType operationType = getOperationTypeForResult(row, col);
-            return new CardInfo(String.valueOf(result), result, operationType, false);
+            int resultado = resultadosEmbaralhados[linha][coluna];
+            Card.OperationType tipoOperacao = obterTipoOperacaoParaResultado(linha, coluna);
+            return new InformacoesCarta(String.valueOf(resultado), resultado, tipoOperacao, false);
         }
     }
 
     /**
      * Obtém o tipo de operação baseado na posição da matriz.
-     * @param row Linha da matriz
-     * @param col Coluna da matriz
+     * @param linha Linha da matriz
+     * @param coluna Coluna da matriz
      * @return Tipo de operação
      */
-    private Card.OperationType getOperationType(int row, int col) {
-        int op1 = gerador.getMatrizOperandos1()[row][col];
-        int op2 = gerador.getMatrizOperandos2()[row][col];
-        int result = gerador.getMatrizResultados()[row][col];
+    private Card.OperationType obterTipoOperacao(int linha, int coluna) {
+        int operando1 = gerador.getMatrizOperandos1()[linha][coluna];
+        int operando2 = gerador.getMatrizOperandos2()[linha][coluna];
+        int resultado = gerador.getMatrizResultados()[linha][coluna];
         
-        if (op1 + op2 == result) return Card.OperationType.SOMA;
-        if (op1 - op2 == result) return Card.OperationType.SUBTRACAO;
-        if (op1 * op2 == result) return Card.OperationType.MULTIPLICACAO;
-        if (op2 != 0 && op1 / op2 == result) return Card.OperationType.DIVISAO;
+        if (operando1 + operando2 == resultado) return Card.OperationType.SOMA;
+        if (operando1 - operando2 == resultado) return Card.OperationType.SUBTRACAO;
+        if (operando1 * operando2 == resultado) return Card.OperationType.MULTIPLICACAO;
+        if (operando2 != 0 && operando1 / operando2 == resultado) return Card.OperationType.DIVISAO;
         
         return Card.OperationType.SOMA;
     }
@@ -891,30 +821,30 @@ public class GameController {
     /**
      * Obtém o tipo de operação para cartas de resultado baseado na posição.
      * Para cartas de resultado, precisamos determinar qual operação gerou aquele resultado.
-     * @param row Linha da matriz
-     * @param col Coluna da matriz
+     * @param linha Linha da matriz
+     * @param coluna Coluna da matriz
      * @return Tipo de operação
      */
-    private Card.OperationType getOperationTypeForResult(int row, int col) {
-        int result = resultadosEmbaralhados[row][col];
+    private Card.OperationType obterTipoOperacaoParaResultado(int linha, int coluna) {
+        int resultado = resultadosEmbaralhados[linha][coluna];
 
-        for (int i = 0; i < NUM_ROWS; i++) {
-            for (int j = 0; j < NUM_COLS; j++) {
-                int op1 = gerador.getMatrizOperandos1()[i][j];
-                int op2 = gerador.getMatrizOperandos2()[i][j];
-                int opResult = gerador.getMatrizResultados()[i][j];
+        for (int i = 0; i < NUMERO_LINHAS; i++) {
+            for (int j = 0; j < NUMERO_COLUNAS; j++) {
+                int operando1 = gerador.getMatrizOperandos1()[i][j];
+                int operando2 = gerador.getMatrizOperandos2()[i][j];
+                int resultadoOperacao = gerador.getMatrizResultados()[i][j];
                 
-                if (opResult == result) {
-                    if (op1 + op2 == opResult) return Card.OperationType.SOMA;
-                    if (op1 - op2 == opResult) return Card.OperationType.SUBTRACAO;
-                    if (op1 * op2 == opResult) return Card.OperationType.MULTIPLICACAO;
-                    if (op2 != 0 && op1 / op2 == opResult) return Card.OperationType.DIVISAO;
+                if (resultadoOperacao == resultado) {
+                    if (operando1 + operando2 == resultadoOperacao) return Card.OperationType.SOMA;
+                    if (operando1 - operando2 == resultadoOperacao) return Card.OperationType.SUBTRACAO;
+                    if (operando1 * operando2 == resultadoOperacao) return Card.OperationType.MULTIPLICACAO;
+                    if (operando2 != 0 && operando1 / operando2 == resultadoOperacao) return Card.OperationType.DIVISAO;
                 }
             }
         }
 
-        int index = row * NUM_COLS + col;
-        switch (index % 4) {
+        int indice = linha * NUMERO_COLUNAS + coluna;
+        switch (indice % 4) {
             case 0: return Card.OperationType.SOMA;
             case 1: return Card.OperationType.SUBTRACAO;
             case 2: return Card.OperationType.MULTIPLICACAO;
@@ -925,11 +855,11 @@ public class GameController {
 
     /**
      * Obtém o símbolo da operação.
-     * @param operationType Tipo de operação
+     * @param tipoOperacao Tipo de operação
      * @return Símbolo da operação
      */
-    private String getOperationSymbol(Card.OperationType operationType) {
-        switch (operationType) {
+    private String obterSimboloOperacao(Card.OperationType tipoOperacao) {
+        switch (tipoOperacao) {
             case SOMA: return "+";
             case SUBTRACAO: return "-";
             case MULTIPLICACAO: return "×";
@@ -940,34 +870,32 @@ public class GameController {
 
     /**
      * Esconde o conteúdo de uma carta.
-     * @param card Carta a ser escondida
+     * @param carta Carta a ser escondida
      */
-    private void hideCard(StackPane card) {
-        if (card.getChildren().size() >= 3) {
-            card.getChildren().get(0).setVisible(true);
+    private void esconderCarta(StackPane carta) {
+        if (carta.getChildren().size() >= 3) {
+            carta.getChildren().get(0).setVisible(true);
 
-            card.getChildren().get(1).setVisible(false);
+            carta.getChildren().get(1).setVisible(false);
 
-            card.getChildren().get(2).setVisible(false);
+            carta.getChildren().get(2).setVisible(false);
         }
     }
-
-
 
     /**
      * Classe interna para armazenar informações de uma carta.
      */
-    private static class CardInfo {
-        final String displayText;
-        final int result;
-        final Card.OperationType operationType;
-        final boolean isOperation;
+    private static class InformacoesCarta {
+        final String textoExibicao;
+        final int resultado;
+        final Card.OperationType tipoOperacao;
+        final boolean isOperacao;
 
-        CardInfo(String displayText, int result, Card.OperationType operationType, boolean isOperation) {
-            this.displayText = displayText;
-            this.result = result;
-            this.operationType = operationType;
-            this.isOperation = isOperation;
+        InformacoesCarta(String textoExibicao, int resultado, Card.OperationType tipoOperacao, boolean isOperacao) {
+            this.textoExibicao = textoExibicao;
+            this.resultado = resultado;
+            this.tipoOperacao = tipoOperacao;
+            this.isOperacao = isOperacao;
         }
     }
 }

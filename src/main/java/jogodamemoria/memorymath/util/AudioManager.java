@@ -9,6 +9,10 @@ import java.net.URL;
 /**
  * Gerenciador de áudio para o jogo Memory Math.
  * Controla todos os sons do jogo incluindo música de fundo e efeitos sonoros.
+ * Implementa o padrão Singleton para garantir uma única instância.
+ * 
+ * @author Renan Amancio
+ * @version 1.0
  */
 public class AudioManager {
     
@@ -29,6 +33,11 @@ public class AudioManager {
         inicializarSons();
     }
     
+    /**
+     * Obtém a instância única do AudioManager (Singleton).
+     * 
+     * @return Instância do AudioManager
+     */
     public static AudioManager getInstance() {
         if (instance == null) {
             instance = new AudioManager();
@@ -46,7 +55,7 @@ public class AudioManager {
                 Media musica = new Media(musicaUrl.toExternalForm());
                 musicaFundo = new MediaPlayer(musica);
                 musicaFundo.setVolume(volumeMusica);
-                musicaFundo.setCycleCount(MediaPlayer.INDEFINITE); // Loop infinito
+                musicaFundo.setCycleCount(MediaPlayer.INDEFINITE);
             }
 
             URL somRevelarUrl = getClass().getResource("/sounds/flip-card.mp3");
@@ -191,6 +200,8 @@ public class AudioManager {
     
     /**
      * Define se o som está ativado.
+     * 
+     * @param ativado true para ativar, false para desativar
      */
     public void setSomAtivado(boolean ativado) {
         this.somAtivado = ativado;
@@ -198,6 +209,8 @@ public class AudioManager {
     
     /**
      * Define se a música está ativada.
+     * 
+     * @param ativada true para ativar, false para desativar
      */
     public void setMusicaAtivada(boolean ativada) {
         this.musicaAtivada = ativada;
@@ -210,6 +223,8 @@ public class AudioManager {
     
     /**
      * Define o volume da música.
+     * 
+     * @param volume Volume entre 0.0 e 1.0
      */
     public void setVolumeMusica(double volume) {
         this.volumeMusica = Math.max(0.0, Math.min(1.0, volume));
@@ -220,6 +235,8 @@ public class AudioManager {
     
     /**
      * Define o volume dos efeitos sonoros.
+     * 
+     * @param volume Volume entre 0.0 e 1.0
      */
     public void setVolumeEfeitos(double volume) {
         this.volumeEfeitos = Math.max(0.0, Math.min(1.0, volume));
@@ -242,6 +259,8 @@ public class AudioManager {
     
     /**
      * Verifica se o som está ativado.
+     * 
+     * @return true se o som está ativado
      */
     public boolean isSomAtivado() {
         return somAtivado;
@@ -249,6 +268,8 @@ public class AudioManager {
     
     /**
      * Verifica se a música está ativada.
+     * 
+     * @return true se a música está ativada
      */
     public boolean isMusicaAtivada() {
         return musicaAtivada;
@@ -256,6 +277,8 @@ public class AudioManager {
     
     /**
      * Obtém o volume da música.
+     * 
+     * @return Volume da música (0.0 a 1.0)
      */
     public double getVolumeMusica() {
         return volumeMusica;
@@ -263,6 +286,8 @@ public class AudioManager {
     
     /**
      * Obtém o volume dos efeitos.
+     * 
+     * @return Volume dos efeitos (0.0 a 1.0)
      */
     public double getVolumeEfeitos() {
         return volumeEfeitos;
