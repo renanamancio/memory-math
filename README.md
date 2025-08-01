@@ -1,8 +1,8 @@
 # Memory Math - Jogo de Memória Matemática
 
-<<<<<<< HEAD
+
 Um jogo educativo de memória que combina matemática com diversão! Encontre pares de cartas que formem operações matemáticas válidas.
-=======
+
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.java.net/)
 [![JavaFX](https://img.shields.io/badge/JavaFX-21-blue.svg)](https://openjfx.io/)
 [![Maven](https://img.shields.io/badge/Maven-3.13.0-red.svg)](https://maven.apache.org/)
@@ -11,15 +11,15 @@ Um jogo educativo de memória que combina matemática com diversão! Encontre pa
 <p align="center">
   <img width="350" height="350" alt="logoJogo" src="https://github.com/user-attachments/assets/d813046b-c188-4113-b2ea-07871c8c2761" />
 </p>
->>>>>>> 9a51e4ab1c22d5290e05f072656cb4e33dfdf64f
+
 
 ## 🎮 Características
 
-- **Sistema de Pontuação**: +5 pontos por acerto, -1 ponto por erro
+- **Sistema de Pontuação**: +10 pontos por acerto, -3 pontos por erro
 - **Modos de Jogo**: PvP (Jogador vs Jogador) e PvE (Jogador vs IA)
 - **Dificuldades da IA**: Fácil, Médio e Difícil
 - **Operações Matemáticas**: Soma, Subtração, Multiplicação e Divisão
-- **Estrutura do Jogo**: 24 cartas (12 pares únicos)
+
 - **Interface Responsiva**: Otimizada para desktop
 - **Sons e Música**: Efeitos sonoros e música de fundo
 
@@ -29,10 +29,9 @@ Um jogo educativo de memória que combina matemática com diversão! Encontre pa
 2. **Primeira Carta**: Clique em uma carta do grid de operações
 3. **Segunda Carta**: Clique em uma carta do grid de resultados
 4. **Pontuação**: 
-   - Acertar um par: +5 pontos
-   - Errar um par: -1 ponto
-5. **Fim do Jogo**: O jogo termina quando todos os 12 pares forem encontrados
-6. **Vitória**: Quem tiver mais pontos no final vence!
+   - Acertar um par: +10 pontos
+   - Errar um par: -3 pontos
+5. **Vitória**: Quem tiver mais pontos no final vence!
 
 ## 🛠️ Requisitos
 
@@ -104,7 +103,6 @@ memoryMath/
 
 ## 🎯 Funcionalidades Implementadas
 
-<<<<<<< HEAD
 ### ✅ Correções Realizadas
 - **Som de Derrota**: Corrigido para tocar quando a IA vence
 - **Sistema de Pontuação**: Implementado (+10/-3 pontos)
@@ -184,7 +182,6 @@ Este projeto está sob a licença MIT. Veja o arquivo `LICENSE.md` para mais det
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-<<<<<<< HEAD
 ## 📞 Suporte
 
 Para dúvidas ou sugestões, abra uma issue no repositório.
@@ -224,4 +221,3 @@ Se você encontrar algum problema ou tiver sugestões:
 ---
 
 **Divirta-se jogando Memory Math! 🎮🧮** 
->>>>>>> 9a51e4ab1c22d5290e05f072656cb4e33dfdf64f
