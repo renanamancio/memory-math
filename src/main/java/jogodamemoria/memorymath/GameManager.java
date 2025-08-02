@@ -161,6 +161,6 @@ public class GameManager {
     public Player determinarVencedor() {
         if (player1.getScore() > player2.getScore()) return player1;
         if (player2.getScore() > player1.getScore()) return player2;
-        return null; // empate
+        return null;
     }
 }

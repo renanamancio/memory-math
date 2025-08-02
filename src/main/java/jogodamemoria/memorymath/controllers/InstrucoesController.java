@@ -17,7 +17,6 @@ public class InstrucoesController {
      */
     @FXML
     public void initialize() {
-        // Inicialização da tela de instruções
     }
 
     /**

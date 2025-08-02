@@ -27,15 +27,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-        // Configura o gerenciador de cenas
         SceneManager.getInstance().setPrimaryStage(primaryStage);
         SceneManager.getInstance().carregarCena("/fxml/menu-view.fxml");
-        
-        // Carrega e configura o ícone da aplicação
+
         Image icone = new Image(Main.class.getResourceAsStream("/images/logoJogo.png"));
         primaryStage.getIcons().add(icone);
-        
-        // Configura as propriedades da janela principal
+
         primaryStage.setTitle("Memory Math - Jogo de Memória Matemática");
         primaryStage.setMinWidth(1024);
         primaryStage.setMinHeight(768);

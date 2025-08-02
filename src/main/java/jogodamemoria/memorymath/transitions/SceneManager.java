@@ -67,7 +67,26 @@ public class SceneManager {
                 throw new IOException("Não foi possível encontrar o recurso FXML: " + nomeArquivoFxml);
             }
 
-            Parent newRoot = FXMLLoader.load(resourceUrl);
+            FXMLLoader loader = new FXMLLoader(resourceUrl);
+            Parent newRoot = loader.load();
+
+            if (nomeArquivoFxml.contains("game-view.fxml")) {
+                System.out.println("Carregando cena do jogo - inicializando controller...");
+                Object controller = loader.getController();
+                if (controller instanceof jogodamemoria.memorymath.controllers.GameController) {
+                    jogodamemoria.memorymath.controllers.GameController gameController = 
+                        (jogodamemoria.memorymath.controllers.GameController) controller;
+                    javafx.application.Platform.runLater(() -> {
+                        try {
+                            gameController.inicializar();
+                        } catch (Exception e) {
+                            System.err.println("ERRO ao inicializar GameController: " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    });
+                }
+            }
+            
             Scene currentScene = primaryStage.getScene();
 
             if (currentScene == null) {

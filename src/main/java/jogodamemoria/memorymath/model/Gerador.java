@@ -29,8 +29,7 @@ public class Gerador {
         int linhas = matrizGeradaRes.length;
         int colunas = matrizGeradaRes[0].length;
         int totalCartas = linhas * colunas;
-        
-        // Conta quantas operações foram selecionadas
+
         List<Integer> operacoesAtivas = new ArrayList<>();
         for (int i = 0; i < operacoesEscolhidas.length; i++) {
             if (operacoesEscolhidas[i] == 1) {
@@ -47,8 +46,7 @@ public class Gerador {
         System.out.println("Número de operações: " + numOperacoes);
         System.out.println("Cartas por operação: " + cartasPorOperacao);
         System.out.println("Cartas restantes: " + cartasRestantes);
-        
-        // Cria lista de operações distribuídas
+
         List<Integer> operacoesDistribuidas = new ArrayList<>();
         for (int i = 0; i < numOperacoes; i++) {
             int operacao = operacoesAtivas.get(i);
@@ -60,11 +58,9 @@ public class Gerador {
             
             System.out.println("Operação " + getNomeOperacao(operacao) + ": " + quantidade + " cartas");
         }
-        
-        // Embaralha a lista de operações
+
         Collections.shuffle(operacoesDistribuidas);
-        
-        // Gera as operações na ordem embaralhada
+
         int index = 0;
         for (int i = 0; i < linhas; i++) {
             for (int j = 0; j < colunas; j++) {

@@ -25,6 +25,5 @@ public class HumanPlayer extends Player {
      */
     @Override
     public void jogarTurno() {
-        // A lógica do turno do humano é controlada pelo GameController
     }
 }

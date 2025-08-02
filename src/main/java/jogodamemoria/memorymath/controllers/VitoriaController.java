@@ -15,8 +15,6 @@ public class VitoriaController {
 
     @FXML
     public void initialize() {
-        // O som já foi tocado no GameController baseado no resultado
-        
         GameManager gm = GameManager.getInstance();
         Player vencedor = gm.getVencedor();
         GameManager.GameMode modo = gm.getGameMode();

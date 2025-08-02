@@ -35,7 +35,6 @@ public class ConfigAudioController {
      * Configura a interface inicial.
      */
     private void configurarInterface() {
-        // Configura sliders
         sliderVolumeMusica.setMin(0.0);
         sliderVolumeMusica.setMax(1.0);
         sliderVolumeMusica.setValue(audioManager.getVolumeMusica());
@@ -43,12 +42,10 @@ public class ConfigAudioController {
         sliderVolumeEfeitos.setMin(0.0);
         sliderVolumeEfeitos.setMax(1.0);
         sliderVolumeEfeitos.setValue(audioManager.getVolumeEfeitos());
-        
-        // Configura checkboxes
+
         checkBoxSom.setSelected(audioManager.isSomAtivado());
         checkBoxMusica.setSelected(audioManager.isMusicaAtivada());
-        
-        // Atualiza labels
+
         atualizarLabelsVolume();
     }
 
@@ -56,23 +53,19 @@ public class ConfigAudioController {
      * Configura os eventos dos controles.
      */
     private void configurarEventos() {
-        // Evento do checkbox de som
         checkBoxSom.setOnAction(event -> {
             audioManager.setSomAtivado(checkBoxSom.isSelected());
         });
 
-        // Evento do checkbox de música
         checkBoxMusica.setOnAction(event -> {
             audioManager.setMusicaAtivada(checkBoxMusica.isSelected());
         });
 
-        // Evento do slider de volume da música
         sliderVolumeMusica.valueProperty().addListener((observable, oldValue, newValue) -> {
             audioManager.setVolumeMusica(newValue.doubleValue());
             atualizarLabelsVolume();
         });
 
-        // Evento do slider de volume dos efeitos
         sliderVolumeEfeitos.valueProperty().addListener((observable, oldValue, newValue) -> {
             audioManager.setVolumeEfeitos(newValue.doubleValue());
             atualizarLabelsVolume();
@@ -83,8 +76,6 @@ public class ConfigAudioController {
      * Carrega as configurações salvas.
      */
     private void carregarConfiguracoes() {
-        // Por enquanto, usa as configurações padrão
-        // Em uma implementação completa, você carregaria de um arquivo de configuração
         checkBoxSom.setSelected(true);
         checkBoxMusica.setSelected(true);
         sliderVolumeMusica.setValue(0.3);

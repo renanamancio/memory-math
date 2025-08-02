@@ -50,7 +50,6 @@ public abstract class Player {
      */
     public void adicionarPontos(int pontos) {
         this.score += pontos;
-        // Garante que a pontuação não fique negativa
         if (this.score < 0) {
             this.score = 0;
         }

@@ -108,6 +108,12 @@
     -fx-hgap: 8;
     -fx-vgap: 8;
     -fx-alignment: center;
+    -fx-min-width: 300px;
+    -fx-min-height: 400px;
+    -fx-pref-width: 300px;
+    -fx-pref-height: 400px;
+    -fx-max-width: 400px;
+    -fx-max-height: 500px;
 }
 
 .card {
@@ -125,14 +131,20 @@
     -fx-padding: 0;
     -fx-alignment: center;
     -fx-effect: dropshadow(gaussian, #222, 6, 0.2, 2, 2);
-    margin: 8px;
-
+    -fx-cursor: hand;
     -fx-overflow: visible;
+}
+
+.card:hover {
+    -fx-effect: dropshadow(gaussian, #222, 8, 0.3, 3, 3);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 
 .card.matched {
     -fx-border-color: #2ecc40;
     -fx-border-width: 4px;
+    -fx-opacity: 0.7;
 }
 
 .card.erro-match {
@@ -146,17 +158,13 @@
     -fx-effect: none;
 }
 
-.grid-pane {
-    -fx-hgap: 16px;
-    -fx-vgap: 16px;
-    -fx-alignment: center;
-}
-
 .board-title-label {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-text-fill: #000000;
     -fx-effect: dropshadow(gaussian, rgba(159, 148, 148, 0.8), 2, 0, 0, 0);
+    -fx-padding: 5px;
+    -fx-alignment: center;
 }
 
 .player-score-container {
@@ -242,7 +250,6 @@
     }
 }
 
-/* Estilos para a tela de instruções */
 .scroll-pane {
     -fx-background-color: transparent;
     -fx-background: transparent;
@@ -262,7 +269,6 @@
     -fx-background-radius: 10;
 }
 
-/* Melhorias para desktop */
 @media (min-width: 1024px) {
     .card {
         -fx-pref-width: 120px;
